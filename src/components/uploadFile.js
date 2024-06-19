@@ -2,6 +2,8 @@ import { useState } from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import EditableTable from "./EditableTable";
+import { Link } from "react-router-dom";
+
 
 function UploadFile() {
   const [data, setData] = useState([]);
@@ -120,6 +122,10 @@ function UploadFile() {
         accept=".xlsx, .xls"
         onChange={handleFileUpload}
       />
+      <br/>
+      <button>
+        <Link to="/">atras</Link>
+      </button>
       {data.length > 0 && (
         <div>
           <select onChange={(e) => setAnalysisType(e.target.value)}>
