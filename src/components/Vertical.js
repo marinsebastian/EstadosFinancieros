@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import * as XLSX from 'xlsx';
+import './Vertical.css'; // Importamos el archivo CSS
 
 const Vertical = () => {
   const [activosCorrientes, setActivosCorrientes] = useState([{ nombre: '', valor: 0 }]);
@@ -91,9 +92,9 @@ const Vertical = () => {
   };
 
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
-      <h1>Estado de Resultados - Año 1</h1>
-      <table border="1" style={{ margin: '0 auto', marginTop: '20px', width: '80%' }}>
+    <div className="vertical-container">
+      <h1 className="title">Estado de Resultados - Año 1</h1>
+      <table className="financial-table">
         <thead>
           <tr>
             <th>Cuenta</th>
@@ -112,7 +113,6 @@ const Vertical = () => {
                   name="nombre"
                   value={cuenta.nombre}
                   onChange={(event) => handleInputChange(setActivosCorrientes, index, event)}
-                  style={{ width: '100%' }}
                 />
               </td>
               <td>
@@ -121,14 +121,13 @@ const Vertical = () => {
                   name="valor"
                   value={cuenta.valor}
                   onChange={(event) => handleInputChange(setActivosCorrientes, index, event)}
-                  style={{ width: '100%' }}
                 />
               </td>
             </tr>
           ))}
           <tr>
             <td colSpan="2">
-              <button onClick={() => agregarFila(setActivosCorrientes)}>Agregar Cuenta Activo Corriente</button>
+              <button onClick={() => agregarFila(setActivosCorrientes)} className="add-button">Agregar Cuenta Activo Corriente</button>
             </td>
           </tr>
           <tr>
@@ -142,7 +141,6 @@ const Vertical = () => {
                   name="nombre"
                   value={cuenta.nombre}
                   onChange={(event) => handleInputChange(setActivosFijos, index, event)}
-                  style={{ width: '100%' }}
                 />
               </td>
               <td>
@@ -151,14 +149,13 @@ const Vertical = () => {
                   name="valor"
                   value={cuenta.valor}
                   onChange={(event) => handleInputChange(setActivosFijos, index, event)}
-                  style={{ width: '100%' }}
                 />
               </td>
             </tr>
           ))}
           <tr>
             <td colSpan="2">
-              <button onClick={() => agregarFila(setActivosFijos)}>Agregar Cuenta Activo Fijo</button>
+              <button onClick={() => agregarFila(setActivosFijos)} className="add-button">Agregar Cuenta Activo Fijo</button>
             </td>
           </tr>
           <tr>
@@ -172,7 +169,6 @@ const Vertical = () => {
                   name="nombre"
                   value={cuenta.nombre}
                   onChange={(event) => handleInputChange(setOtrosActivos, index, event)}
-                  style={{ width: '100%' }}
                 />
               </td>
               <td>
@@ -181,28 +177,27 @@ const Vertical = () => {
                   name="valor"
                   value={cuenta.valor}
                   onChange={(event) => handleInputChange(setOtrosActivos, index, event)}
-                  style={{ width: '100%' }}
                 />
               </td>
             </tr>
           ))}
           <tr>
             <td colSpan="2">
-              <button onClick={() => agregarFila(setOtrosActivos)}>Agregar Cuenta otro activo</button>
+              <button onClick={() => agregarFila(setOtrosActivos)} className="add-button">Agregar Cuenta Otro Activo</button>
             </td>
           </tr>
           <tr>
             <td colSpan="2">
-              <button onClick={handleCalculate}>Calcular</button>
+              <button onClick={handleCalculate} className="calculate-button">Calcular</button>
             </td>
           </tr>
         </tbody>
       </table>
 
       {showResults && (
-        <div>
+        <div className="results">
           <h1>Resultados</h1>
-          <table border="1" style={{ margin: '0 auto', marginTop: '20px', width: '80%' }}>
+          <table className="financial-table">
             <thead>
               <tr>
                 <th>Cuenta</th>
@@ -273,7 +268,7 @@ const Vertical = () => {
               </tr>
             </tbody>
           </table>
-          <button onClick={exportToExcel} style={{ marginTop: '20px' }}>Descargar en Excel</button>
+          <button onClick={exportToExcel} className="download-button">Descargar en Excel</button>
           <div>
             {activosCorrientes.map((cuenta, index) => (
               <tr key={index}>
@@ -293,8 +288,8 @@ const Vertical = () => {
           </div>
         </div>
       )}
-      <div> 
-        <Link to="/">atras</Link>
+      <div className="back-link">
+        <Link to="/inicio">atras</Link>
       </div>
     </div>
   );

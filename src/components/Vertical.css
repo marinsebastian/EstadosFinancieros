@@ -1,0 +1,78 @@
+.vertical-container {
+    padding: 20px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  .title {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .financial-table {
+    margin: 0 auto;
+    margin-top: 20px;
+    width: 80%;
+    border-collapse: collapse;
+  }
+  
+  .financial-table th,
+  .financial-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .financial-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .financial-table td input {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .add-button,
+  .calculate-button,
+  .download-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .add-button:hover,
+  .calculate-button:hover,
+  .download-button:hover {
+    background-color: #45a049;
+  }
+  
+  .results {
+    margin-top: 20px;
+  }
+  
+  .back-link {
+    margin-top: 20px;
+  }
+  
+  .back-link a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  
+  .back-link a:hover {
+    text-decoration: underline;
+  }
+  

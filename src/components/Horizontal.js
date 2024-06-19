@@ -341,7 +341,7 @@ const Horizontal = () => {
         </>
       )}
       <div> 
-        <Link to="/">atras</Link>
+        <Link to="/inicio">atras</Link>
       </div>
     </div>
   );

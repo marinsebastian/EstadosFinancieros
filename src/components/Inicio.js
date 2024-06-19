@@ -1,17 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import './Inicio.css'; // Importamos el archivo CSS
 
-const Inicio = ()=>{
-return(
-    <div> 
-        <Link to="/vertical">vertical </Link> <br/>
-        <Link to="/horizontal">horizontal</Link> <br/>
-        <Link to="/horizontalbase">horizontal base</Link>
-        <br/>
-        <button>
-            <Link to="/">atras</Link>
-        </button>
+const Inicio = () => {
+  return (
+    <div className="inicio-container">
+      <h1 className="title">REALIZAR ANÁLISIS:</h1>
+      <div className="link-container">
+        <Link to="/vertical" className="link">Vertical</Link>
+        <Link to="/horizontal" className="link">Horizontal</Link>
+        <Link to="/horizontalbase" className="link">Horizontal Base</Link>
+      </div>
+      <button className="back-button">
+        <Link to="/" className="back-link">Atrás</Link>
+      </button>
     </div>
-)
-}
+  );
+};
+
 export default Inicio;
