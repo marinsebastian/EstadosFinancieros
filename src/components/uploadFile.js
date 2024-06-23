@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import EditableTable from "./EditableTable";
 import { Link } from "react-router-dom";
+import "./Upload.css"
 
 
 function UploadFile() {
@@ -116,7 +117,7 @@ function UploadFile() {
   };
 
   return (
-    <div className="App">
+    <div className="contenido-upload">
       <input
         type="file"
         accept=".xlsx, .xls"
@@ -127,7 +128,7 @@ function UploadFile() {
         <Link to="/">atras</Link>
       </button>
       {data.length > 0 && (
-        <div>
+        <div className="resultado-tabla">
           <select onChange={(e) => setAnalysisType(e.target.value)}>
             <option value="">Seleccione un análisis</option>
             <option value="horizontal">Análisis Horizontal</option>
