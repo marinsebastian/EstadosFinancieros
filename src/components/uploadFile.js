@@ -17,6 +17,13 @@ function UploadFile() {
     range3: { start: null, end: null }
   });
 
+  const [selectedRatiosRows, setSelectedRatiosRows] = useState({
+    activosCorrientes: null,
+    pasivosCortoPlazo: null,
+    pasivos: null,
+    patrimonio: null,
+  });
+
   const handleFileUpload = (e) => {
     const reader = new FileReader();
     reader.readAsBinaryString(e.target.files[0]);
@@ -84,6 +91,31 @@ function UploadFile() {
         return newRow;
       });
       setData(updatedData);
+    } else if (analysisType === "ratios") {
+      const updatedData = data.map((row) => ({ ...row }));
+      const years = ["A2013", "A2014", "A2015", "A2016", "A2017"];
+      const ratios = { "Ratio de liquidez": {}, "Ratio de solvencia": {} };
+
+      const activosCorrientesRow = data.find(row => row.CUENTAS === selectedRatiosRows.activosCorrientes);
+      const pasivosCortoPlazoRow = data.find(row => row.CUENTAS === selectedRatiosRows.pasivosCortoPlazo);
+      const pasivosRow = data.find(row => row.CUENTAS === selectedRatiosRows.pasivos);
+      const patrimonioRow = data.find(row => row.CUENTAS === selectedRatiosRows.patrimonio);
+
+      if (activosCorrientesRow && pasivosCortoPlazoRow && pasivosRow && patrimonioRow) {
+        years.forEach((year) => {
+          if (activosCorrientesRow[year] !== undefined && pasivosCortoPlazoRow[year] !== undefined && pasivosRow[year] !== undefined && patrimonioRow[year] !== undefined) {
+            ratios["Ratio de liquidez"][year] = (activosCorrientesRow[year] / pasivosCortoPlazoRow[year]).toFixed(2);
+            ratios["Ratio de solvencia"][year] = (pasivosRow[year] / patrimonioRow[year]).toFixed(2);
+          }
+        });
+
+        updatedData.push({ CUENTAS: "Ratio de liquidez", ...ratios["Ratio de liquidez"] });
+        updatedData.push({ CUENTAS: "Ratio de solvencia", ...ratios["Ratio de solvencia"] });
+      } else {
+        alert("No se encontraron todas las filas necesarias para calcular los ratios.");
+      }
+
+      setData(updatedData);
     }
   };
 
@@ -104,6 +136,14 @@ function UploadFile() {
         ...prev[range],
         [type]: value
       }
+    }));
+  };
+
+  const handleRatiosRowSelection = (e) => {
+    const { name, value } = e.target;
+    setSelectedRatiosRows((prev) => ({
+      ...prev,
+      [name]: value
     }));
   };
 
@@ -135,6 +175,7 @@ function UploadFile() {
             <option value="vertical">Análisis Vertical</option>
             <option value="verticalSubcuentas">Análisis Vertical Subcuentas</option>
             <option value="tendencias">Análisis de Tendencias con Año Base</option>
+            <option value="ratios">Calcular Ratios</option>
           </select>
           {analysisType === "horizontal" && (
             <>
@@ -168,23 +209,18 @@ function UploadFile() {
                   <option key={key} value={key}>{key}</option>
                 ))}
               </select>
-              {["range1", "range2", "range3"].map((range) => (
+              {["range1", "range2", "range3"].map((range, idx) => (
                 <div key={range}>
-                  <label>{`Rango ${range.slice(-1)}`}</label>
                   <select onChange={(e) => handleRowSelection(e, range, "start")}>
-                    <option value="">Seleccione la fila inicial</option>
+                    <option value="">Seleccione la fila de inicio</option>
                     {data.map((row, index) => (
-                      <option key={index} value={Object.values(row)[0]}>
-                        {Object.values(row)[0]}
-                      </option>
+                      <option key={index} value={row[Object.keys(data[0])[0]]}>{row[Object.keys(data[0])[0]]}</option>
                     ))}
                   </select>
                   <select onChange={(e) => handleRowSelection(e, range, "end")}>
-                    <option value="">Seleccione la fila final</option>
+                    <option value="">Seleccione la fila de fin</option>
                     {data.map((row, index) => (
-                      <option key={index} value={Object.values(row)[0]}>
-                        {Object.values(row)[0]}
-                      </option>
+                      <option key={index} value={row[Object.keys(data[0])[0]]}>{row[Object.keys(data[0])[0]]}</option>
                     ))}
                   </select>
                 </div>
@@ -193,18 +229,45 @@ function UploadFile() {
           )}
           {analysisType === "tendencias" && (
             <select name="tendencias" onChange={handleColumnSelection}>
-              <option value="">Seleccione la columna base</option>
+              <option value="">Seleccione la columna</option>
               {Object.keys(data[0]).map((key) => (
                 <option key={key} value={key}>{key}</option>
               ))}
             </select>
           )}
+          {analysisType === "ratios" && (
+            <>
+              <select name="activosCorrientes" onChange={handleRatiosRowSelection}>
+                <option value="">Seleccione ACTIVOS CORRIENTES</option>
+                {data.map((row, index) => (
+                  <option key={index} value={row.CUENTAS}>{row.CUENTAS}</option>
+                ))}
+              </select>
+              <select name="pasivosCortoPlazo" onChange={handleRatiosRowSelection}>
+                <option value="">Seleccione PASIVOS A CORTO PLAZO</option>
+                {data.map((row, index) => (
+                  <option key={index} value={row.CUENTAS}>{row.CUENTAS}</option>
+                ))}
+              </select>
+              <select name="pasivos" onChange={handleRatiosRowSelection}>
+                <option value="">Seleccione PASIVOS</option>
+                {data.map((row, index) => (
+                  <option key={index} value={row.CUENTAS}>{row.CUENTAS}</option>
+                ))}
+              </select>
+              <select name="patrimonio" onChange={handleRatiosRowSelection}>
+                <option value="">Seleccione PATRIMONIO</option>
+                {data.map((row, index) => (
+                  <option key={index} value={row.CUENTAS}>{row.CUENTAS}</option>
+                ))}
+              </select>
+            </>
+          )}
           <button onClick={handleAnalysis}>Realizar Análisis</button>
-          <button onClick={handleDownload}>Descargar Excel</button>
-          <EditableTable data={data} setData={setData} selectedRows={selectedRows} verticalColumn={verticalColumn} />
+          <button onClick={handleDownload}>Descargar Análisis</button>
+          <EditableTable data={data} setData={setData} />
         </div>
       )}
-      <br /><br />
     </div>
   );
 }

@@ -8,7 +8,7 @@ function EditableTable({ data, setData, selectedRows, verticalColumn }) {
     const { value } = e.target;
     const updatedData = [...data];
     updatedData[rowIndex][key] = value;
-    
+
     if (columns.includes("VARIACION ABSOLUTA") && columns.includes("VARIACION RELATIVA")) {
       const [col1, col2] = columns.slice(0, 2); 
       const varAbs = updatedData[rowIndex][col2] - updatedData[rowIndex][col1];
@@ -52,7 +52,7 @@ function EditableTable({ data, setData, selectedRows, verticalColumn }) {
           <tr key={rowIndex}>
             {columns.map((key, colIndex) => (
               <td key={colIndex}>
-                {key.startsWith("VARIACION") || key.startsWith("ANALISIS") || key.startsWith("AT:") ? (
+                {key.startsWith("VARIACION") || key.startsWith("ANALISIS") || key.startsWith("AT:") || key === "Ratio de liquidez" || key === "Ratio de solvencia" ? (
                   row[key]
                 ) : (
                   <input
