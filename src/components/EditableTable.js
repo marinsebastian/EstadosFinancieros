@@ -1,7 +1,7 @@
 import React from "react";
 import "./EditableTable.css";
 
-function EditableTable({ data, setData, selectedRows, verticalColumn }) {
+function EditableTable({ data, setData, selectedRows, verticalColumn, selectedColumns, onCellClick }) {
   const columns = Object.keys(data[0]);
 
   const handleInputChange = (e, rowIndex, key) => {
@@ -10,25 +10,25 @@ function EditableTable({ data, setData, selectedRows, verticalColumn }) {
     updatedData[rowIndex][key] = value;
 
     if (columns.includes("VARIACION ABSOLUTA") && columns.includes("VARIACION RELATIVA")) {
-      const [col1, col2] = columns.slice(0, 2); 
+      const [col1, col2] = selectedColumns;
       const varAbs = updatedData[rowIndex][col2] - updatedData[rowIndex][col1];
       const varRel = (varAbs / updatedData[rowIndex][col1]) * 100;
       updatedData[rowIndex]["VARIACION ABSOLUTA"] = varAbs;
       updatedData[rowIndex]["VARIACION RELATIVA"] = varRel;
     }
     if (columns.includes("ANALISIS VERTICAL")) {
-      const lastRowValue = data[data.length - 1][verticalColumn]; 
+      const lastRowValue = data[data.length - 1][verticalColumn];
       updatedData[rowIndex]["ANALISIS VERTICAL"] = ((updatedData[rowIndex][verticalColumn] - lastRowValue) / lastRowValue) * 100;
     }
     if (columns.includes("ANALISIS VERTICAL SUBCUENTAS")) {
       let analysisVerticalSubcuentas = 0;
       for (const range in selectedRows) {
-        const { start, end } = selectedRows[range]; 
+        const { start, end } = selectedRows[range];
         if (start !== null && end !== null) {
           const endRowValue = data.find((row) => row[Object.keys(data[0])[0]] === end)[verticalColumn];
           if (updatedData[rowIndex][Object.keys(data[0])[0]] >= start && updatedData[rowIndex][Object.keys(data[0])[0]] <= end && endRowValue !== 0) {
             analysisVerticalSubcuentas = (updatedData[rowIndex][verticalColumn] / endRowValue) * 100;
-            break;  
+            break;
           }
         }
       }
@@ -36,6 +36,13 @@ function EditableTable({ data, setData, selectedRows, verticalColumn }) {
     }
 
     setData(updatedData);
+  };
+
+  const handleCellClick = (columnName, cellValue, row) => {
+    if (columnName === "ANALISIS VERTICAL" || columnName === "VARIACION RELATIVA") {
+      const firstCellValue = row[Object.keys(row)[0]];
+      onCellClick(columnName, cellValue, firstCellValue, selectedColumns, verticalColumn);
+    }
   };
 
   return (
@@ -51,8 +58,11 @@ function EditableTable({ data, setData, selectedRows, verticalColumn }) {
         {data.map((row, rowIndex) => (
           <tr key={rowIndex}>
             {columns.map((key, colIndex) => (
-              <td key={colIndex}>
-                {key.startsWith("VARIACION") || key.startsWith("ANALISIS") || key.startsWith("AT:") || key === "Ratio de liquidez" || key === "Ratio de solvencia" ? (
+              <td 
+                key={colIndex} 
+                onClick={() => handleCellClick(key, row[key], row)}
+              >
+                {key.startsWith("VARIACION") || key.startsWith("ANALISIS") || key.startsWith("AT:") ? (
                   row[key]
                 ) : (
                   <input

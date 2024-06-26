@@ -3,8 +3,8 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import EditableTable from "./EditableTable";
 import { Link } from "react-router-dom";
-import "./Upload.css"
-
+import "./Upload.css";
+import Modal from "./Modal";
 
 function UploadFile() {
   const [data, setData] = useState([]);
@@ -16,13 +16,9 @@ function UploadFile() {
     range2: { start: null, end: null },
     range3: { start: null, end: null }
   });
-
-  const [selectedRatiosRows, setSelectedRatiosRows] = useState({
-    activosCorrientes: null,
-    pasivosCortoPlazo: null,
-    pasivos: null,
-    patrimonio: null,
-  });
+  const [normalValueCount, setNormalValueCount] = useState(1);
+  const [format, setFormat] = useState("formato1");
+  const [modalInfo, setModalInfo] = useState(null);
 
   const handleFileUpload = (e) => {
     const reader = new FileReader();
@@ -64,7 +60,7 @@ function UploadFile() {
       const updatedData = data.map((row, rowIndex) => {
         let analysisVerticalSubcuentas = 0;
         for (const range in selectedRows) {
-          const { start, end } = selectedRows[range]; 
+          const { start, end } = selectedRows[range];
           if (start !== null && end !== null) {
             const endRowValue = data.find((r) => r[Object.keys(data[0])[0]] === end)[verticalColumn];
             if (rowIndex >= data.findIndex((r) => r[Object.keys(data[0])[0]] === start) && rowIndex <= data.findIndex((r) => r[Object.keys(data[0])[0]] === end) && endRowValue !== 0) {
@@ -82,37 +78,73 @@ function UploadFile() {
     } else if (analysisType === "tendencias" && verticalColumn) {
       const updatedData = data.map((row) => {
         const newRow = { ...row };
-        const baseValue = row[verticalColumn]; 
+        const baseValue = row[verticalColumn];
         Object.keys(row).forEach((key, index) => {
-          if (index > 0) { 
+          if (index > 0) {
             newRow[`AT:${key}`] = (row[key] / baseValue) * 100;
           }
         });
         return newRow;
       });
       setData(updatedData);
-    } else if (analysisType === "ratios") {
-      const updatedData = data.map((row) => ({ ...row }));
-      const years = ["A2013", "A2014", "A2015", "A2016", "A2017"];
-      const ratios = { "Ratio de liquidez": {}, "Ratio de solvencia": {} };
+    } else if (analysisType === "normalDistribution" && selectedColumns.length === 2) {
+      const colIndices = selectedColumns.map((col) => Object.keys(data[0]).indexOf(col));
+      const [startIndex, endIndex] = colIndices.sort((a, b) => a - b);
 
-      const activosCorrientesRow = data.find(row => row.CUENTAS === selectedRatiosRows.activosCorrientes);
-      const pasivosCortoPlazoRow = data.find(row => row.CUENTAS === selectedRatiosRows.pasivosCortoPlazo);
-      const pasivosRow = data.find(row => row.CUENTAS === selectedRatiosRows.pasivos);
-      const patrimonioRow = data.find(row => row.CUENTAS === selectedRatiosRows.patrimonio);
+      let updatedData = data.map((row) => {
+        const values = Object.keys(row).slice(startIndex, endIndex + 1).map((key) => parseFloat(row[key]));
+        const mean = values.reduce((a, b) => a + b, 0) / values.length;
+        const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+        const stdDev = Math.sqrt(variance);
+        const newRow = { ...row };
+        for (let i = 1; i <= normalValueCount; i++) {
+          const randomValue = Math.random();
+          const projection = (mean + stdDev * randomValue).toFixed(2);
+          newRow[`PROYECCION AÑO ${i}`] = parseFloat(projection);
+        }
+        return newRow;
+      });
 
-      if (activosCorrientesRow && pasivosCortoPlazoRow && pasivosRow && patrimonioRow) {
-        years.forEach((year) => {
-          if (activosCorrientesRow[year] !== undefined && pasivosCortoPlazoRow[year] !== undefined && pasivosRow[year] !== undefined && patrimonioRow[year] !== undefined) {
-            ratios["Ratio de liquidez"][year] = (activosCorrientesRow[year] / pasivosCortoPlazoRow[year]).toFixed(2);
-            ratios["Ratio de solvencia"][year] = (pasivosRow[year] / patrimonioRow[year]).toFixed(2);
+      if (format === "formato1") {
+        for (let i = 0; i < updatedData.length; i++) {
+          if (i === 5) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = updatedData.slice(0, 5).reduce((sum, row) => sum + row[`PROYECCION AÑO ${normalValueCount}`], 0).toFixed(2);
+          } else if (i === 12) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = updatedData.slice(6, 12).reduce((sum, row) => sum + row[`PROYECCION AÑO ${normalValueCount}`], 0).toFixed(2);
+          } else if (i === 18) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = updatedData.slice(13, 18).reduce((sum, row) => sum + row[`PROYECCION AÑO ${normalValueCount}`], 0).toFixed(2);
+          } else if (i === 19) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = (parseFloat(updatedData[5][`PROYECCION AÑO ${normalValueCount}`]) + parseFloat(updatedData[12][`PROYECCION AÑO ${normalValueCount}`]) + parseFloat(updatedData[18][`PROYECCION AÑO ${normalValueCount}`])).toFixed(2);
           }
-        });
-
-        updatedData.push({ CUENTAS: "Ratio de liquidez", ...ratios["Ratio de liquidez"] });
-        updatedData.push({ CUENTAS: "Ratio de solvencia", ...ratios["Ratio de solvencia"] });
-      } else {
-        alert("No se encontraron todas las filas necesarias para calcular los ratios.");
+        }
+      } else if (format === "formato2") {
+        for (let i = 0; i < updatedData.length; i++) {
+          if (i === 1) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = updatedData.slice(2, 7).reduce((sum, row) => sum + row[`PROYECCION AÑO ${normalValueCount}`], 0).toFixed(2);
+          } else if (i === 7) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = updatedData.slice(8, 11).reduce((sum, row) => sum + row[`PROYECCION AÑO ${normalValueCount}`], 0).toFixed(2);
+          } else if (i === 12) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = updatedData.slice(14, 17).reduce((sum, row) => sum + row[`PROYECCION AÑO ${normalValueCount}`], 0).toFixed(2);
+          }  else if (i === 20) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = updatedData.slice(21, 25).reduce((sum, row) => sum + row[`PROYECCION AÑO ${normalValueCount}`], 0).toFixed(2);
+          } 
+        }
+        for (let i = 0; i < updatedData.length; i++) {
+          if (i === 0) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = (parseFloat(updatedData[1][`PROYECCION AÑO ${normalValueCount}`]) + parseFloat(updatedData[7][`PROYECCION AÑO ${normalValueCount}`])).toFixed(2);
+          } else if (i === 13) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = (parseFloat(updatedData[14][`PROYECCION AÑO ${normalValueCount}`]) + parseFloat(updatedData[18][`PROYECCION AÑO ${normalValueCount}`])).toFixed(2);
+          } else if (i === 17) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = (parseFloat(updatedData[18][`PROYECCION AÑO ${normalValueCount}`]) + parseFloat(updatedData[19][`PROYECCION AÑO ${normalValueCount}`])).toFixed(2);
+          }  
+        }
+        for (let i = updatedData.length; i > 0; i--) {
+          if (i === 12) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = (parseFloat(updatedData[13][`PROYECCION AÑO ${normalValueCount}`]) + parseFloat(updatedData[17][`PROYECCION AÑO ${normalValueCount}`])).toFixed(2);
+          } else if (i === 11) {
+            updatedData[i][`PROYECCION AÑO ${normalValueCount}`] = (parseFloat(updatedData[12][`PROYECCION AÑO ${normalValueCount}`]) + parseFloat(updatedData[20][`PROYECCION AÑO ${normalValueCount}`])).toFixed(2);
+          }
+        }
       }
 
       setData(updatedData);
@@ -121,8 +153,8 @@ function UploadFile() {
 
   const handleColumnSelection = (e) => {
     const { name, value } = e.target;
-    if (name === "horizontal") {
-      setSelectedColumns((prev) => [...prev, value].slice(-2)); 
+    if (name === "horizontal" || name === "normalDistribution") {
+      setSelectedColumns((prev) => [...prev, value].slice(-2));
     } else if (name === "vertical" || name === "tendencias") {
       setVerticalColumn(value);
     }
@@ -139,14 +171,6 @@ function UploadFile() {
     }));
   };
 
-  const handleRatiosRowSelection = (e) => {
-    const { name, value } = e.target;
-    setSelectedRatiosRows((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
   const handleDownload = () => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
@@ -154,6 +178,22 @@ function UploadFile() {
     const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(blob, "analisis.xlsx");
+  };
+
+  const handleCellClick = (columnName, cellValue, firstCellValue, selectedColumns, verticalColumn) => {
+    let message = "";
+    if (columnName === "ANALISIS VERTICAL") {
+      message = `Según el análisis vertical, ${firstCellValue} representa el ${cellValue} del total del ${verticalColumn}.`;
+    } else if (columnName === "VARIACION RELATIVA") {
+      const [col1, col2] = selectedColumns;
+      const changeType = cellValue > 0 ? "aumento" : "disminución";
+      message = `Según el análisis horizontal, la cuenta ${firstCellValue} presentó un ${changeType} de ${cellValue} en el ${col1} con respecto al ${col2}.`;
+    }
+    setModalInfo({
+      columnName,
+      cellValue,
+      message
+    });
   };
 
   return (
@@ -175,7 +215,7 @@ function UploadFile() {
             <option value="vertical">Análisis Vertical</option>
             <option value="verticalSubcuentas">Análisis Vertical Subcuentas</option>
             <option value="tendencias">Análisis de Tendencias con Año Base</option>
-            <option value="ratios">Calcular Ratios</option>
+            <option value="normalDistribution">Proyeccion en base a años pasados</option>
           </select>
           {analysisType === "horizontal" && (
             <>
@@ -209,18 +249,23 @@ function UploadFile() {
                   <option key={key} value={key}>{key}</option>
                 ))}
               </select>
-              {["range1", "range2", "range3"].map((range, idx) => (
+              {["range1", "range2", "range3"].map((range) => (
                 <div key={range}>
+                  <label>{`Rango ${range.slice(-1)}`}</label>
                   <select onChange={(e) => handleRowSelection(e, range, "start")}>
-                    <option value="">Seleccione la fila de inicio</option>
+                    <option value="">Seleccione la fila inicial</option>
                     {data.map((row, index) => (
-                      <option key={index} value={row[Object.keys(data[0])[0]]}>{row[Object.keys(data[0])[0]]}</option>
+                      <option key={index} value={Object.values(row)[0]}>
+                        {Object.values(row)[0]}
+                      </option>
                     ))}
                   </select>
                   <select onChange={(e) => handleRowSelection(e, range, "end")}>
-                    <option value="">Seleccione la fila de fin</option>
+                    <option value="">Seleccione la fila final</option>
                     {data.map((row, index) => (
-                      <option key={index} value={row[Object.keys(data[0])[0]]}>{row[Object.keys(data[0])[0]]}</option>
+                      <option key={index} value={Object.values(row)[0]}>
+                        {Object.values(row)[0]}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -229,45 +274,59 @@ function UploadFile() {
           )}
           {analysisType === "tendencias" && (
             <select name="tendencias" onChange={handleColumnSelection}>
-              <option value="">Seleccione la columna</option>
+              <option value="">Seleccione la columna base</option>
               {Object.keys(data[0]).map((key) => (
                 <option key={key} value={key}>{key}</option>
               ))}
             </select>
           )}
-          {analysisType === "ratios" && (
+          {analysisType === "normalDistribution" && (
             <>
-              <select name="activosCorrientes" onChange={handleRatiosRowSelection}>
-                <option value="">Seleccione ACTIVOS CORRIENTES</option>
-                {data.map((row, index) => (
-                  <option key={index} value={row.CUENTAS}>{row.CUENTAS}</option>
+              <select name="normalDistribution" onChange={handleColumnSelection}>
+                <option value="">Seleccione la Columna 1</option>
+                {Object.keys(data[0]).map((key) => (
+                  <option key={key} value={key}>{key}</option>
                 ))}
               </select>
-              <select name="pasivosCortoPlazo" onChange={handleRatiosRowSelection}>
-                <option value="">Seleccione PASIVOS A CORTO PLAZO</option>
-                {data.map((row, index) => (
-                  <option key={index} value={row.CUENTAS}>{row.CUENTAS}</option>
+              <select name="normalDistribution" onChange={handleColumnSelection}>
+                <option value="">Seleccione la Columna 2</option>
+                {Object.keys(data[0]).map((key) => (
+                  <option key={key} value={key}>{key}</option>
                 ))}
               </select>
-              <select name="pasivos" onChange={handleRatiosRowSelection}>
-                <option value="">Seleccione PASIVOS</option>
-                {data.map((row, index) => (
-                  <option key={index} value={row.CUENTAS}>{row.CUENTAS}</option>
-                ))}
-              </select>
-              <select name="patrimonio" onChange={handleRatiosRowSelection}>
-                <option value="">Seleccione PATRIMONIO</option>
-                {data.map((row, index) => (
-                  <option key={index} value={row.CUENTAS}>{row.CUENTAS}</option>
-                ))}
+              <label>Número de columnas de PROYECCION AÑO:</label>
+              <input 
+                type="number" 
+                min="1" 
+                value={normalValueCount} 
+                onChange={(e) => setNormalValueCount(parseInt(e.target.value) || 1)} 
+              />
+              <label>Formato:</label>
+              <select value={format} onChange={(e) => setFormat(e.target.value)}>
+                <option value="formato1">Formato 1</option>
+                <option value="formato2">Formato 2</option>
               </select>
             </>
           )}
           <button onClick={handleAnalysis}>Realizar Análisis</button>
-          <button onClick={handleDownload}>Descargar Análisis</button>
-          <EditableTable data={data} setData={setData} />
+          <button onClick={handleDownload}>Descargar Excel</button>
+          <EditableTable 
+            data={data} 
+            setData={setData} 
+            selectedRows={selectedRows} 
+            verticalColumn={verticalColumn} 
+            selectedColumns={selectedColumns}
+            onCellClick={handleCellClick} 
+          />
         </div>
       )}
+      {modalInfo && (
+        <Modal onClose={() => setModalInfo(null)}>
+          <h2>{modalInfo.columnName}</h2>
+          <p>{modalInfo.message}</p>
+        </Modal>
+      )}
+      <br /><br />
     </div>
   );
 }
