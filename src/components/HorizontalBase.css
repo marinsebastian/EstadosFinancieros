@@ -1,37 +1,69 @@
 .App {
   font-family: Arial, sans-serif;
   padding: 20px;
-  margin-top: 600px;
+  margin: 0 auto;
+  max-width: 1200px;
+  overflow-y: auto;
+  height: 100vh;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  margin-top: auto;
+  margin-top: 20px;
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 2px;
-  font-size: 13px;
+  padding: 4px;
+  font-size: 12px;
 }
 
 th {
   background-color: #f2f2f2;
   text-align: left;
-  font-size: 13px;
-  padding: 2px;
 }
 
 button {
   background-color: #4CAF50;
   color: white;
   border: none;
-  padding: 5px 20px;
+  padding: 8px 16px;
   cursor: pointer;
+  font-size: 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
   background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+  .App {
+    padding: 10px;
+  }
+
+  th, td {
+    font-size: 10px;
+    padding: 2px;
+  }
+
+  button {
+    padding: 6px 12px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  th, td {
+    font-size: 8px;
+    padding: 1px;
+  }
+
+  button {
+    padding: 4px 8px;
+    font-size: 8px;
+  }
 }

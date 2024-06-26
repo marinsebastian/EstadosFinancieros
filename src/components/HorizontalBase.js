@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './HorizontalBase.css';
+import * as XLSX from 'xlsx';
+
 
 const HorizontalBase = () => {
   const [data, setData] = useState({
@@ -79,7 +81,7 @@ const HorizontalBase = () => {
 
   const calculatePercentages = () => {
     const newPercentages = JSON.parse(JSON.stringify(data));
-    const baseYearIndex = 0; 
+    const baseYearIndex = 0;
 
     Object.keys(newPercentages.activos).forEach((key) => {
       newPercentages.activos[key] = newPercentages.activos[key].map(item => ({
@@ -104,7 +106,7 @@ const HorizontalBase = () => {
       const totalActivosNoCorrientes = calculateSum(data.activos.activosNoCorrientes, yearIndex);
       const totalActivos = totalActivosCorrientes + totalActivosNoCorrientes;
 
-      const baseYearIndex = 0; 
+      const baseYearIndex = 0;
       const baseTotalActivosCorrientes = calculateSum(data.activos.activosCorrientes, baseYearIndex);
       const baseTotalActivosNoCorrientes = calculateSum(data.activos.activosNoCorrientes, baseYearIndex);
       const baseTotalActivos = baseTotalActivosCorrientes + baseTotalActivosNoCorrientes;
@@ -131,7 +133,7 @@ const HorizontalBase = () => {
       const totalPasivosLargoPlazo = calculateSum(data.pasivosYPatrimonio.pasivos.pasivosLargoPlazo, yearIndex);
       const totalPasivos = totalPasivosCortoPlazo + totalPasivosLargoPlazo;
 
-      const baseYearIndex = 0; 
+      const baseYearIndex = 0;
       const baseTotalPasivosCortoPlazo = calculateSum(data.pasivosYPatrimonio.pasivos.pasivosCortoPlazo, baseYearIndex);
       const baseTotalPasivosLargoPlazo = calculateSum(data.pasivosYPatrimonio.pasivos.pasivosLargoPlazo, baseYearIndex);
       const baseTotalPasivos = baseTotalPasivosCortoPlazo + baseTotalPasivosLargoPlazo;
@@ -177,23 +179,23 @@ const HorizontalBase = () => {
     const newData = { ...data };
     const lastYearIndex = newData.years.length - 1;
     const newYear = newData.years[lastYearIndex] + 1;
-  
+
     // Añadir un nuevo año
     newData.years.push(newYear);
-  
+
     // Función para calcular la media
     const calculateMean = (values) => {
       const sum = values.reduce((a, b) => a + b, 0);
       return (sum / values.length).toFixed(2);
     };
-  
+
     // Función para calcular la desviación estándar
     const calculateStdDev = (values, mean) => {
       const squareDiffs = values.map(value => Math.pow(value - mean, 2));
       const avgSquareDiff = calculateMean(squareDiffs);
       return Math.sqrt(avgSquareDiff).toFixed(2);
     };
-  
+
     // Función para generar números aleatorios con distribución normal
     const getRandomNormal = (mean, stdDev) => {
       let u1 = Math.random();
@@ -201,7 +203,7 @@ const HorizontalBase = () => {
       let randStdNormal = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
       return (mean + stdDev * randStdNormal).toFixed(2);
     };
-  
+
     const simulateValues = (items) => {
       return items.map(item => {
         const mean = parseFloat(calculateMean(item.valores));
@@ -213,17 +215,56 @@ const HorizontalBase = () => {
         };
       });
     };
-  
+
     newData.activos.activosCorrientes = simulateValues(newData.activos.activosCorrientes);
     newData.activos.activosNoCorrientes = simulateValues(newData.activos.activosNoCorrientes);
     newData.pasivosYPatrimonio.pasivos.pasivosCortoPlazo = simulateValues(newData.pasivosYPatrimonio.pasivos.pasivosCortoPlazo);
     newData.pasivosYPatrimonio.pasivos.pasivosLargoPlazo = simulateValues(newData.pasivosYPatrimonio.pasivos.pasivosLargoPlazo);
     newData.pasivosYPatrimonio.patrimonio = simulateValues(newData.pasivosYPatrimonio.patrimonio);
-  
+
     setData(newData);
   };
-  
-  
+  const saveToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet([]);
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+
+    // Headers
+    const headers = ["Section", "Sub Section", "Name", ...data.years];
+    XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
+
+    // Data
+    const addRowsToSheet = (section, subSection, items) => {
+      items.forEach((item, index) => {
+        const row = [section, subSection, item.nombre, ...item.valores];
+        XLSX.utils.sheet_add_aoa(worksheet, [row], { origin: `A${range.e.r + 2 + index}` });
+      });
+    };
+
+    // Add Activos
+    addRowsToSheet("Activos", "Activos Corrientes", data.activos.activosCorrientes);
+    addRowsToSheet("Activos", "Activos No Corrientes", data.activos.activosNoCorrientes);
+
+    // Add Pasivos
+    addRowsToSheet("Pasivos", "Pasivos Corto Plazo", data.pasivosYPatrimonio.pasivos.pasivosCortoPlazo);
+    addRowsToSheet("Pasivos", "Pasivos Largo Plazo", data.pasivosYPatrimonio.pasivos.pasivosLargoPlazo);
+
+    // Add Patrimonio
+    addRowsToSheet("Patrimonio", "", data.pasivosYPatrimonio.patrimonio);
+
+    // Add Totals
+    XLSX.utils.sheet_add_aoa(worksheet, [["Activos", "", "Total Activos", ...data.years.map((_, yearIndex) => percentages.activos.totalActivos[yearIndex])]], { origin: `A${worksheet['!ref'].split(":")[1].slice(1)}+2` });
+    XLSX.utils.sheet_add_aoa(worksheet, [["Activos", "", "Total Activos Corrientes", ...data.years.map((_, yearIndex) => percentages.activos.totalActivosCorrientes[yearIndex])]], { origin: `A${worksheet['!ref'].split(":")[1].slice(1)}+3` });
+    XLSX.utils.sheet_add_aoa(worksheet, [["Activos", "", "Total Activos No Corrientes", ...data.years.map((_, yearIndex) => percentages.activos.totalActivosNoCorrientes[yearIndex])]], { origin: `A${worksheet['!ref'].split(":")[1].slice(1)}+4` });
+
+    XLSX.utils.sheet_add_aoa(worksheet, [["Pasivos y Patrimonio", "", "Total Pasivos", ...data.years.map((_, yearIndex) => percentages.pasivosYPatrimonio.totalPasivos[yearIndex])]], { origin: `A${worksheet['!ref'].split(":")[1].slice(1)}+5` });
+    XLSX.utils.sheet_add_aoa(worksheet, [["Pasivos y Patrimonio", "", "Total Patrimonio", ...data.years.map((_, yearIndex) => percentages.pasivosYPatrimonio.totalPatrimonio[yearIndex])]], { origin: `A${worksheet['!ref'].split(":")[1].slice(1)}+6` });
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.writeFile(workbook, "financial_data.xlsx");
+  };
+
+
 
   return (
     <div className="App">
@@ -486,6 +527,8 @@ const HorizontalBase = () => {
               ))}
             </tbody>
           </table>
+          <button onClick={saveToExcel}>Guardar en Excel</button>
+
         </div>
       )}
     </div>

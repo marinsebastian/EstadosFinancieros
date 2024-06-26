@@ -184,9 +184,7 @@ const Vertical = () => {
             </thead>
             <tbody>
               <tr>
-                <td colSpan="2">
-                  <strong>Activo Corriente</strong>
-                </td>
+                <th colSpan="2">Activo Corriente</th>
               </tr>
               {activosCorrientes.map((cuenta, index) => (
                 <tr key={index}>
@@ -215,17 +213,15 @@ const Vertical = () => {
               <tr>
                 <td colSpan="2">
                   <button
-                    onClick={() => agregarFila(setActivosCorrientes)}
                     className="add-button"
+                    onClick={() => agregarFila(setActivosCorrientes)}
                   >
-                    Agregar subcuenta
+                    Agregar Activo Corriente
                   </button>
                 </td>
               </tr>
               <tr>
-                <td colSpan="2">
-                  <strong>Activo Fijo</strong>
-                </td>
+                <th colSpan="2">Activo Fijo</th>
               </tr>
               {activosFijos.map((cuenta, index) => (
                 <tr key={index}>
@@ -254,17 +250,15 @@ const Vertical = () => {
               <tr>
                 <td colSpan="2">
                   <button
-                    onClick={() => agregarFila(setActivosFijos)}
                     className="add-button"
+                    onClick={() => agregarFila(setActivosFijos)}
                   >
-                    Agregar subcuenta
+                    Agregar Activo Fijo
                   </button>
                 </td>
               </tr>
               <tr>
-                <td colSpan="2">
-                  <strong>Otros Activos</strong>
-                </td>
+                <th colSpan="2">Otros Activos</th>
               </tr>
               {otrosActivos.map((cuenta, index) => (
                 <tr key={index}>
@@ -293,28 +287,21 @@ const Vertical = () => {
               <tr>
                 <td colSpan="2">
                   <button
-                    onClick={() => agregarFila(setOtrosActivos)}
                     className="add-button"
+                    onClick={() => agregarFila(setOtrosActivos)}
                   >
-                    Agregar subcuenta
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td colSpan="2">
-                  <button
-                    onClick={handleCalculate}
-                    className="calculate-button"
-                  >
-                    Calcular
+                    Agregar Otros Activos
                   </button>
                 </td>
               </tr>
             </tbody>
           </table>
-          <div className="back-link">
-            <Link to="/inicio">Atras</Link>
-          </div>
+          <button
+            className="calculate-button"
+            onClick={handleCalculate}
+          >
+            Calcular
+          </button>
         </div>
       )}
       {showResults && (
@@ -331,251 +318,120 @@ const Vertical = () => {
             </thead>
             <tbody>
               <tr>
-                <td colSpan="4">
-                  <strong>Activo Corriente</strong>
-                </td>
+                <th colSpan="4">Activo Corriente</th>
               </tr>
               {activosCorrientes.map((cuenta, index) => (
                 <tr key={index}>
                   <td>{cuenta.nombre}</td>
-                  <td>{cuenta.valor}$</td>
+                  <td>{cuenta.valor}</td>
                   <td>
-                    {calcularAnalisisVertical(
-                      cuenta.valor,
-                      totalActivos
-                    ).toFixed(2)}
-                    %
+                    {calcularAnalisisVertical(cuenta.valor, totalActivos).toFixed(2) +
+                      "%"}
                   </td>
                   <td>
                     {calcularAnalisisSubcuentas(
                       cuenta.valor,
                       calcularSubtotal(activosCorrientes)
-                    ).toFixed(2)}
-                    %
+                    ).toFixed(2) + "%"}
                   </td>
                 </tr>
               ))}
               <tr>
-                <td>
-                  <strong>Subtotal Activo Corriente</strong>
-                </td>
-                <td>{calcularSubtotal(activosCorrientes)}$</td>
+                <td>Subtotal Activo Corriente</td>
+                <td>{calcularSubtotal(activosCorrientes)}</td>
                 <td>
                   {calcularAnalisisVertical(
                     calcularSubtotal(activosCorrientes),
                     totalActivos
-                  ).toFixed(2)}
-                  %
+                  ).toFixed(2) + "%"}
                 </td>
-                <td>
-                  {activosCorrientes
-                    .reduce(
-                      (acc, item) =>
-                        acc +
-                        calcularAnalisisSubcuentas(
-                          item.valor,
-                          calcularSubtotal(activosCorrientes)
-                        ),
-                      0
-                    )
-                    .toFixed(2)}
-                  %
-                </td>
+                <td></td>
               </tr>
               <tr>
-                <td colSpan="4">
-                  <strong>Activo Fijo</strong>
-                </td>
+                <th colSpan="4">Activo Fijo</th>
               </tr>
               {activosFijos.map((cuenta, index) => (
                 <tr key={index}>
-                  <td>{cuenta.nombre} </td>
-                  <td>{cuenta.valor}$</td>
+                  <td>{cuenta.nombre}</td>
+                  <td>{cuenta.valor}</td>
                   <td>
-                    {calcularAnalisisVertical(
-                      cuenta.valor,
-                      totalActivos
-                    ).toFixed(2)}
-                    %
+                    {calcularAnalisisVertical(cuenta.valor, totalActivos).toFixed(2) +
+                      "%"}
                   </td>
                   <td>
                     {calcularAnalisisSubcuentas(
                       cuenta.valor,
                       calcularSubtotal(activosFijos)
-                    ).toFixed(2)}
-                    %
+                    ).toFixed(2) + "%"}
                   </td>
                 </tr>
               ))}
               <tr>
-                <td>
-                  <strong>Subtotal Activo Fijo</strong>
-                </td>
+                <td>Subtotal Activo Fijo</td>
                 <td>{calcularSubtotal(activosFijos)}</td>
                 <td>
                   {calcularAnalisisVertical(
                     calcularSubtotal(activosFijos),
                     totalActivos
-                  ).toFixed(2)}
-                  %
+                  ).toFixed(2) + "%"}
                 </td>
-                <td>
-                  {activosFijos
-                    .reduce(
-                      (acc, item) =>
-                        acc +
-                        calcularAnalisisSubcuentas(
-                          item.valor,
-                          calcularSubtotal(activosFijos)
-                        ),
-                      0
-                    )
-                    .toFixed(2)}
-                  %
-                </td>
+                <td></td>
               </tr>
               <tr>
-                <td colSpan="4">
-                  <strong>Otros Activos</strong>
-                </td>
+                <th colSpan="4">Otros Activos</th>
               </tr>
               {otrosActivos.map((cuenta, index) => (
                 <tr key={index}>
                   <td>{cuenta.nombre}</td>
                   <td>{cuenta.valor}</td>
                   <td>
-                    {calcularAnalisisVertical(
-                      cuenta.valor,
-                      totalActivos
-                    ).toFixed(2)}
-                    %
+                    {calcularAnalisisVertical(cuenta.valor, totalActivos).toFixed(2) +
+                      "%"}
                   </td>
                   <td>
                     {calcularAnalisisSubcuentas(
                       cuenta.valor,
                       calcularSubtotal(otrosActivos)
-                    ).toFixed(2)}
-                    %
+                    ).toFixed(2) + "%"}
                   </td>
                 </tr>
               ))}
               <tr>
-                <td>
-                  <strong>Subtotal Otros Activos</strong>
-                </td>
+                <td>Subtotal Otros Activos</td>
                 <td>{calcularSubtotal(otrosActivos)}</td>
                 <td>
                   {calcularAnalisisVertical(
                     calcularSubtotal(otrosActivos),
                     totalActivos
-                  ).toFixed(2)}
-                  %
+                  ).toFixed(2) + "%"}
                 </td>
-                <td>
-                  {otrosActivos
-                    .reduce(
-                      (acc, item) =>
-                        acc +
-                        calcularAnalisisSubcuentas(
-                          item.valor,
-                          calcularSubtotal(otrosActivos)
-                        ),
-                      0
-                    )
-                    .toFixed(2)}
-                  %
-                </td>
+                <td></td>
               </tr>
               <tr>
-                <td>
-                  <strong>Total Activos</strong>
-                </td>
+                <td>Total Activos</td>
                 <td>{totalActivos}</td>
-                <td>
-                  {(
-                    calcularAnalisisVertical(
-                      calcularSubtotal(activosCorrientes),
-                      totalActivos
-                    ) +
-                    calcularAnalisisVertical(
-                      calcularSubtotal(activosFijos),
-                      totalActivos
-                    ) +
-                    calcularAnalisisVertical(
-                      calcularSubtotal(otrosActivos),
-                      totalActivos
-                    )
-                  ).toFixed(2)}
-                  %
-                </td>
-                <td>-</td>
+                <td>100%</td>
+                <td></td>
               </tr>
             </tbody>
           </table>
-          <button onClick={exportToExcel} className="download-button">
-            Descargar en Excel
+          <button
+            className="download-button"
+            onClick={exportToExcel}
+          >
+            Descargar Excel
           </button>
-          <div>
-            {activosCorrientes.map((cuenta, index) => (
-              <tr key={index}>
-                <td>
-                  {cuenta.nombre} representa un{" "}
-                  {calcularAnalisisVertical(cuenta.valor, totalActivos).toFixed(
-                    2
-                  )}
-                  % del total de activos y un{" "}
-                  {calcularAnalisisSubcuentas(
-                    cuenta.valor,
-                    calcularSubtotal(activosCorrientes)
-                  ).toFixed(2)}
-                  % del subtotal de activos corrientes
-                </td>
-              </tr>
-            ))}
-            {activosFijos.map((cuenta, index) => (
-              <tr key={index}>
-                <td>
-                  {cuenta.nombre} representa un{" "}
-                  {calcularAnalisisVertical(cuenta.valor, totalActivos).toFixed(
-                    2
-                  )}
-                  % del total de activos y un{" "}
-                  {calcularAnalisisSubcuentas(
-                    cuenta.valor,
-                    calcularSubtotal(activosFijos)
-                  ).toFixed(2)}
-                  % del subtotal de activos fijos
-                </td>
-              </tr>
-            ))}
-            {otrosActivos.map((cuenta, index) => (
-              <tr key={index}>
-                <td>
-                  {cuenta.nombre} representa un{" "}
-                  {calcularAnalisisVertical(cuenta.valor, totalActivos).toFixed(
-                    2
-                  )}
-                  % del total de activos y un{" "}
-                  {calcularAnalisisSubcuentas(
-                    cuenta.valor,
-                    calcularSubtotal(otrosActivos)
-                  ).toFixed(2)}
-                  % del subtotal de otros activos
-                </td>
-              </tr>
-            ))}
-          </div>
-          <div className="back-link">
-            <Button
-              type="link"
-              onClick={mostrarTabla}
-              style={{ color: "#45a049" }}
-            >
-              Atras
-            </Button>
-          </div>
+          <button
+            className="calculate-button"
+            onClick={mostrarTabla}
+          >
+            Volver
+          </button>
         </div>
       )}
+      <div className="back-link">
+        <Link to="/">Volver al inicio</Link>
+      </div>
     </div>
   );
 };
