@@ -174,7 +174,7 @@ const Vertical = () => {
     <div>
       {!showResults && (
         <div className="vertical-container1">
-          <h1 className="title">Estado de Resultados - Año 1</h1>
+          <h1 className="title">Estado de Resultados - Año </h1>
           <table className="financial-table">
             <thead>
               <tr>
@@ -218,7 +218,7 @@ const Vertical = () => {
                     onClick={() => agregarFila(setActivosCorrientes)}
                     className="add-button"
                   >
-                    Agregar Cuenta Activo Corriente
+                    Agregar subcuenta
                   </button>
                 </td>
               </tr>
@@ -257,7 +257,7 @@ const Vertical = () => {
                     onClick={() => agregarFila(setActivosFijos)}
                     className="add-button"
                   >
-                    Agregar Cuenta Activo Fijo
+                    Agregar subcuenta
                   </button>
                 </td>
               </tr>
@@ -296,7 +296,7 @@ const Vertical = () => {
                     onClick={() => agregarFila(setOtrosActivos)}
                     className="add-button"
                   >
-                    Agregar Cuenta Otro Activo
+                    Agregar subcuenta
                   </button>
                 </td>
               </tr>

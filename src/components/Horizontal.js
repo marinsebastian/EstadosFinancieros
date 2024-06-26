@@ -220,7 +220,7 @@ const Horizontal = () => {
     <div>
       {!showResults && (
         <div className="cotenido-horizontal">
-          <h1>Estado de Resultados </h1>
+          <h3>Estado de Resultados </h3>
           <table className="tabla-horizontal">
             <thead>
               <tr>
@@ -278,7 +278,7 @@ const Horizontal = () => {
                     className="boton-agregar-activo"
                     onClick={() => agregarFila(setActivosCorrientes)}
                   >
-                    Agregar Cuenta Activo Corriente
+                    Agregar subcuenta
                   </button>
                 </td>
               </tr>
@@ -330,7 +330,7 @@ const Horizontal = () => {
                     className="boton-agregar-activo"
                     onClick={() => agregarFila(setActivosFijos)}
                   >
-                    Agregar Cuenta Activo Fijo
+                    Agregar subcuenta
                   </button>
                 </td>
               </tr>
@@ -382,7 +382,7 @@ const Horizontal = () => {
                     className="boton-agregar-activo"
                     onClick={() => agregarFila(setOtrosActivos)}
                   >
-                    Agregar Cuenta Otros Activos
+                    Agregar subcuenta
                   </button>
                 </td>
               </tr>
