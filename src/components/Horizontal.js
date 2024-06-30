@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import { Link } from "react-router-dom";
 import "./Horizontal.css";
 import { Button } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
 
 const Horizontal = () => {
   const [activosCorrientes, setActivosCorrientes] = useState([
@@ -217,7 +218,7 @@ const Horizontal = () => {
   };
 
   return (
-    <div>
+    <div className="contenedor-horizontal">
       {!showResults && (
         <div className="cotenido-horizontal">
           <h3>Estado de Resultados </h3>
@@ -231,7 +232,7 @@ const Horizontal = () => {
             </thead>
             <tbody>
               <tr>
-                <td colSpan="3">
+                <td className="subtitulo" colSpan="3">
                   <strong>Activo Corriente</strong>
                 </td>
               </tr>
@@ -274,16 +275,16 @@ const Horizontal = () => {
               ))}
               <tr>
                 <td colSpan="3">
-                  <button
+                  <Button
                     className="boton-agregar-activo"
                     onClick={() => agregarFila(setActivosCorrientes)}
                   >
                     Agregar subcuenta
-                  </button>
+                  </Button>
                 </td>
               </tr>
               <tr>
-                <td colSpan="3">
+                <td className="subtitulo" colSpan="3">
                   <strong>Activo Fijo</strong>
                 </td>
               </tr>
@@ -326,16 +327,16 @@ const Horizontal = () => {
               ))}
               <tr>
                 <td colSpan="3">
-                  <button
+                  <Button
                     className="boton-agregar-activo"
                     onClick={() => agregarFila(setActivosFijos)}
                   >
                     Agregar subcuenta
-                  </button>
+                  </Button>
                 </td>
               </tr>
               <tr>
-                <td colSpan="3">
+                <td className="subtitulo" colSpan="3">
                   <strong>Otros Activos</strong>
                 </td>
               </tr>
@@ -378,28 +379,26 @@ const Horizontal = () => {
               ))}
               <tr>
                 <td colSpan="3">
-                  <button
+                  <Button
                     className="boton-agregar-activo"
                     onClick={() => agregarFila(setOtrosActivos)}
                   >
                     Agregar subcuenta
-                  </button>
+                  </Button>
                 </td>
               </tr>
             </tbody>
           </table>
-          <button
-            className="boton-agregar-activo"
+          <Button
+            className="boton-calcular-resultado"
+            type="primary"
             onClick={handleCalculate}
-            style={{ marginTop: "20px" }}
           >
             Calcular Resultados
-          </button>
-          <div className="boton-atras">
-            <Link to="/inicio" style={{ color: "#4caf50" }}>
-              Atras
-            </Link>
-          </div>
+          </Button>
+          <Button type="primary" className="boton-atras">
+            <Link to="/inicio">Atrás</Link>
+          </Button>
         </div>
       )}
       {showResults && (
@@ -407,7 +406,7 @@ const Horizontal = () => {
           <h2>Resultados del Análisis</h2>
           <table
             border="1"
-            style={{ margin: "0 auto", marginTop: "20px", width: "80%" }}
+            className="tabla-resultado-horizontal"
           >
             <thead>
               <tr>
@@ -420,7 +419,7 @@ const Horizontal = () => {
             </thead>
             <tbody>
               <tr>
-                <td colSpan="5">
+                <td className="subtitulo" colSpan="5">
                   <strong>Activo Corriente</strong>
                 </td>
               </tr>
@@ -461,7 +460,7 @@ const Horizontal = () => {
                 </td>
               </tr>
               <tr>
-                <td colSpan="5">
+                <td className="subtitulo" colSpan="5">
                   <strong>Activo Fijo</strong>
                 </td>
               </tr>
@@ -502,7 +501,7 @@ const Horizontal = () => {
                 </td>
               </tr>
               <tr>
-                <td colSpan="5">
+                <td className="subtitulo" colSpan="5">
                   <strong>Otros Activos</strong>
                 </td>
               </tr>
@@ -618,18 +617,18 @@ const Horizontal = () => {
               </tr>
             ))}
           </div>
-          <button
-            className="boton-agregar-activo"
+          <Button
+            className="boton-descargar"
             onClick={exportToExcel}
-            style={{ marginTop: "20px" }}
+            icon={<DownloadOutlined />}
           >
             Exportar a Excel
-          </button>
+          </Button>
           <div>
             <Button
-              type="link"
+              type="primary"
               onClick={mostrarTabla}
-              style={{ color: "#45a049" }}
+              className="boton-atras-resultado"
             >
               Atras
             </Button>

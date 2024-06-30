@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
 import "./Vertical.css"; // Importamos el archivo CSS
 import { Button, message } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
 
 const Vertical = () => {
   const [activosCorrientes, setActivosCorrientes] = useState([
@@ -171,7 +172,7 @@ const Vertical = () => {
   };
 
   return (
-    <div>
+    <div className="contenedor-vertical">
       {!showResults && (
         <div className="vertical-container1">
           <h1 className="title">Estado de Resultados - Año </h1>
@@ -212,12 +213,12 @@ const Vertical = () => {
               ))}
               <tr>
                 <td colSpan="2">
-                  <button
+                  <Button
                     className="add-button"
                     onClick={() => agregarFila(setActivosCorrientes)}
                   >
                     Agregar Activo Corriente
-                  </button>
+                  </Button>
                 </td>
               </tr>
               <tr>
@@ -249,12 +250,12 @@ const Vertical = () => {
               ))}
               <tr>
                 <td colSpan="2">
-                  <button
+                  <Button
                     className="add-button"
                     onClick={() => agregarFila(setActivosFijos)}
                   >
                     Agregar Activo Fijo
-                  </button>
+                  </Button>
                 </td>
               </tr>
               <tr>
@@ -286,22 +287,23 @@ const Vertical = () => {
               ))}
               <tr>
                 <td colSpan="2">
-                  <button
+                  <Button
                     className="add-button"
                     onClick={() => agregarFila(setOtrosActivos)}
                   >
                     Agregar Otros Activos
-                  </button>
+                  </Button>
                 </td>
               </tr>
             </tbody>
           </table>
-          <button
+          <Button
             className="calculate-button"
             onClick={handleCalculate}
+            type="primary"
           >
             Calcular
-          </button>
+          </Button>
         </div>
       )}
       {showResults && (
@@ -325,8 +327,10 @@ const Vertical = () => {
                   <td>{cuenta.nombre}</td>
                   <td>{cuenta.valor}</td>
                   <td>
-                    {calcularAnalisisVertical(cuenta.valor, totalActivos).toFixed(2) +
-                      "%"}
+                    {calcularAnalisisVertical(
+                      cuenta.valor,
+                      totalActivos
+                    ).toFixed(2) + "%"}
                   </td>
                   <td>
                     {calcularAnalisisSubcuentas(
@@ -355,8 +359,10 @@ const Vertical = () => {
                   <td>{cuenta.nombre}</td>
                   <td>{cuenta.valor}</td>
                   <td>
-                    {calcularAnalisisVertical(cuenta.valor, totalActivos).toFixed(2) +
-                      "%"}
+                    {calcularAnalisisVertical(
+                      cuenta.valor,
+                      totalActivos
+                    ).toFixed(2) + "%"}
                   </td>
                   <td>
                     {calcularAnalisisSubcuentas(
@@ -385,8 +391,10 @@ const Vertical = () => {
                   <td>{cuenta.nombre}</td>
                   <td>{cuenta.valor}</td>
                   <td>
-                    {calcularAnalisisVertical(cuenta.valor, totalActivos).toFixed(2) +
-                      "%"}
+                    {calcularAnalisisVertical(
+                      cuenta.valor,
+                      totalActivos
+                    ).toFixed(2) + "%"}
                   </td>
                   <td>
                     {calcularAnalisisSubcuentas(
@@ -415,18 +423,20 @@ const Vertical = () => {
               </tr>
             </tbody>
           </table>
-          <button
+          <Button
             className="download-button"
             onClick={exportToExcel}
+            icon={<DownloadOutlined />}
           >
             Descargar Excel
-          </button>
-          <button
-            className="calculate-button"
+          </Button>
+          <Button
+            className="boton-volver"
+            type="primary"
             onClick={mostrarTabla}
           >
             Volver
-          </button>
+          </Button>
         </div>
       )}
       <div className="back-link">

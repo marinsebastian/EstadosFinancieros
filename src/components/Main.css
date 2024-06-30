@@ -1,60 +1,76 @@
 /* Reseteo básico para eliminar márgenes y paddings */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f4f4f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.main-container {
+  text-align: center;
+  background: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+}
+
+.title {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-size: 1.2em;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.link-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.link {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 1em;
+  color: #fff;
+  background-color: #007bff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.link:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive */
+/*Posicion horizontal del celular*/
+@media screen and (max-width: 1024px) and (min-width: 769px) and (orientation: landscape) {
+  .main-container{
+    margin-top: 50%;
+    margin-bottom: 5%;
   }
-  
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-  
+}
+/* Media query para pantallas pequeñas (móviles) */
+@media (max-width: 767px) {
   .main-container {
-    text-align: center;
-    background: #fff;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
+    width: 90%;
+    margin-left: 5%;
+    margin-top: -5%;
   }
-  
-  .title {
-    font-size: 2em;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .subtitle {
-    font-size: 1.2em;
-    color: #666;
-    margin-bottom: 30px;
-  }
-  
-  .link-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .link {
-    display: inline-block;
-    text-decoration: none;
-    font-size: 1em;
-    color: #fff;
-    background-color: #007BFF;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
-  
-  .link:hover {
-    background-color: #0056b3;
-  }
-  
+}

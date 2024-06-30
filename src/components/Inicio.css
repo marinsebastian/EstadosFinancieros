@@ -69,6 +69,22 @@
   .back-link {
     color: #fff;
     text-decoration: none;
-    font-size: 1em;
+    font-size: 15px;
   }
+
+  /* Responsive */
+/*Posicion horizontal del celular*/
+@media screen and (max-width: 1024px) and (min-width: 769px) and (orientation: landscape) {
+  .inicio-container{
+    margin-top: 50%;
+    margin-bottom: 10%;
+  }
+}
+/* Media query para pantallas pequeñas (móviles) */
+@media (max-width: 767px) {
+  .inicio-container{
+    width: 90%;
+    margin-left: 5%;
+  }
+}
   

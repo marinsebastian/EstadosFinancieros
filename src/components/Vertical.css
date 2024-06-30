@@ -2,7 +2,7 @@
 
 /* General Styles */
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f5f5f5;
@@ -14,9 +14,8 @@ h1 {
 }
 
 /* Container */
-.vertical-container1, .results {
-  max-width: 1200px;
-  margin: 20px auto;
+.vertical-container1,
+.results {
   padding: 20px;
   background-color: #fff;
   border-radius: 8px;
@@ -31,14 +30,15 @@ h1 {
   margin-bottom: 20px;
 }
 
-.financial-table th, .financial-table td {
+.financial-table th,
+.financial-table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
 
 .financial-table th {
-  background-color: #4CAF50;
+  background-color: #0095A2;
   color: white;
 }
 
@@ -51,7 +51,7 @@ h1 {
 }
 
 /* Input Styles */
-.financial-table input[type="text"], 
+.financial-table input[type="text"],
 .financial-table input[type="number"] {
   width: 100%;
   padding: 8px;
@@ -61,28 +61,41 @@ h1 {
 }
 
 /* Button Styles */
-.add-button, .calculate-button, .download-button {
-  background-color: #4CAF50;
+.download-button {
+  background-color: #4caf50;
   color: white;
   padding: 10px 20px;
   margin: 10px 0;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.add-button:hover, .calculate-button:hover, .download-button:hover {
+.boton-volver{
+  padding: 10px 20px;
+  border: none;
+  margin-left: 33%;
+  width: 30%;
+}
+
+.boton-volver:hover{
   background-color: #45a049;
 }
+
+.add-button{
+  float: right;
+}
+
 
 .back-link a {
   display: inline-block;
   padding: 10px 20px;
-  color: #4CAF50;
+  color: #4caf50;
   text-decoration: none;
-  border: 1px solid #4CAF50;
+  border: 1px solid #4caf50;
   border-radius: 4px;
   margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 40%;
 }
 
 .back-link a:hover {
@@ -90,17 +103,51 @@ h1 {
   color: white;
 }
 
+.contenedor-vertical {
+  height: 100vh;
+}
+
+.calculate-button {
+  margin-left: 38%;
+  width: 25%;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
-  .vertical-container1, .results {
+  .vertical-container1,
+  .results {
     padding: 10px;
   }
 
-  .financial-table th, .financial-table td {
+  .results{
+    margin-top: 100%;
+    width: 115%;
+    margin-left: -7%;
+  }
+
+  .financial-table th,
+  .financial-table td {
     padding: 6px;
   }
 
-  .add-button, .calculate-button, .download-button, .back-link a {
+  .add-button,
+  .calculate-button,
+  .download-button,
+  .back-link a {
     padding: 8px 16px;
+  }
+
+  .back-link{
+    margin-left: -16%;
+  }
+
+  .boton-volver{
+    margin-left: 23%;
+  }
+}
+
+@media screen and (max-width: 1024px) and (min-width: 769px) and (orientation: landscape) {
+  .boton-volver{
+    margin-left: 30%;
   }
 }
