@@ -1,5 +1,188 @@
-.contenido-upload{
-    text-align: center;
-    margin-top: 70%;
+.contenido-upload {
+  height: 100vh;
+  width: 100vw;
 }
 
+.contenido-superior {
+  padding-left: 40%;
+  padding-top: 2%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.boton-atras {
+  margin-left: -50%;
+  height: 38px;
+  width: 100px;
+}
+
+.subir-archivo {
+  height: 39px;
+}
+
+.resultado-tabla {
+  height: 635px;
+  max-height: 635px;
+  max-width: 1800px;
+  overflow-y: auto;
+  margin: 0 5% 0 5%;
+  padding: 1% 0 1% 0;
+}
+
+.seleccionar-tipo-analisis {
+  padding-bottom: 1%;
+}
+
+.botones-calcular-descargar {
+  width: 70%;
+  margin-left: 30%;
+  margin-top: -2.4%;
+}
+
+.seleccionar-tipo {
+  width: 300px;
+}
+
+.boton-descargar {
+  float: right;
+  background-color: #4caf50;
+  color: #ffff;
+}
+
+.boton-realizar-analisis {
+  margin-left: -8%;
+}
+
+.opcion-vertical {
+  width: 20%;
+  margin-bottom: 1%;
+}
+
+.horizontal-columna1 {
+  width: 200px;
+}
+
+.horizontal-columna2 {
+  width: 200px;
+  margin-left: 5%;
+}
+
+.seleccionar-columna-proyeccion {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.selector-proyeccion {
+  width: 40%;
+  margin-bottom: 2%;
+}
+
+.segundo {
+  margin-left: -55%;
+}
+
+.selector-subcuentas {
+  width: 300px;
+  margin-left: 2%;
+}
+
+.selector-subcuentas2 {
+  width: 300px;
+  margin-left: 3%;
+}
+
+.ant-modal-content{
+  width: 180%;
+  margin-top: 30%;
+  margin-left: -30%;
+}
+
+/* Responsive */
+/*Posicion horizontal del celular*/
+@media screen and (max-width: 1024px) and (min-width: 769px) and (orientation: landscape) {
+  .contenido-superior {
+    padding-left: 25%;
+    padding-bottom: 1%;
+  }
+  .boton-atras {
+    margin: 0;
+  }
+  .botones-calcular-descargar {
+    width: 50%;
+    margin-top: -4.2%;
+    margin-left: 45%;
+  }
+  .boton-realizar-analisis {
+    margin: 0;
+  }
+  .ant-modal-content{
+    width: 120%;
+    margin: 0;
+  }
+}
+/* Media query para pantallas pequeñas (móviles) */
+@media (max-width: 767px) {
+  .contenido-superior {
+    padding-top: 5%;
+    margin-left: -30%;
+  }
+  .boton-atras {
+    margin-left: 30%;
+    width: 80px;
+    height: 35px;
+  }
+  .subir-archivo {
+    height: 35px;
+  }
+  .seleccionar-tipo {
+    width: 100%;
+  }
+  .botones-calcular-descargar {
+    width: 111%;
+    padding-top: 5%;
+    padding-bottom: 2%;
+    margin-left: -11%;
+  }
+  .boton-realizar-analisis {
+    margin-left: 10%;
+  }
+  .resultado-tabla {
+    height: 1200px;
+    max-height: 1200px;
+    padding: 2% 0;
+  }
+  .opcion-vertical {
+    width: 100%;
+  }
+  .horizontal-columna1 {
+    width: 100%;
+  }
+  .horizontal-columna2 {
+    width: 100%;
+    margin: 0;
+    margin-top: 3%;
+  }
+  .seleccionar-columna-proyeccion {
+    display: block;
+    grid-template-columns: initial;
+  }
+  .selector-proyeccion {
+    width: 100%;
+  }
+  .segundo {
+    margin-left: 0;
+  }
+  .selector-subcuentas {
+    width: 100%;
+    margin-left: 0;
+  }
+  .selector-subcuentas2 {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 2%;
+  }
+  .ant-modal-content{
+    width: 100%;
+    margin: 0;
+  }
+}

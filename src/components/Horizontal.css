@@ -1,33 +1,129 @@
 .cotenido-horizontal {
   text-align: center;
-  max-height: 90vh;
-  margin-bottom: 5%;
+  background-color: #ffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 3%;
+  border-radius: 10px;
+  width: 120%;
+  margin-left: -5%;
+}
+
+.contenedor-horizontal{
+  height: 100vh;
+  margin-top: 30%;
+  padding-bottom: 5%;
+}
+
+h3 h2{
+  font-size: 35px;
+  font-size: 35px;
+}
+
+.tabla-horizontal th {
+  background-color: #0095a2;
+  color: #ffff;
+  font-size: 15px;
+}
+
+.tabla-horizontal {
+  width: 100%;
+}
+
+.subtitulo {
+  background-color: #0095a2;
+  color: #ffff;
+  font-size: 15px;
 }
 
 .boton-agregar-activo {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
+  float: right;
+  margin: 1% 2% 1% 0;
+}
+
+.tabla-horizontal input[type="text"],
+.tabla-horizontal input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.boton-agregar-activo:hover {
-  background-color: #45a049;
+.tabla-horizontal tr:hover {
+  background-color: #ddd;
 }
 
-.boton-atras{
-  padding: 2%;
+.tabla-horizontal tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 
-.resultados-horizontal{
-  max-height: 100vh;
-  margin: 10% 5% 5% 5%;
+.boton-atras {
+  margin-left: 30%;
+}
+
+.boton-calcular-resultado{
+  height: 38px;
+}
+
+.resultados-horizontal {
   text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 10px;
+  margin-top: 60%;
+  padding-bottom: 3%;
+  padding-top: 2%;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+
+.tabla-resultado-horizontal th{
+  background-color: #0095a2;
+  color: #ffff;
+  font-size: 15px;
+}
+
+.boton-descargar{
+  background-color: #4caf50;
+  margin-top: 2%;
+}
+
+.boton-atras-resultado{
+  width: 15%;
+  margin-top: 2%;
+  margin-left: -65%;
+}
+
+/* Responsive */
+/*Posicion horizontal del celular*/
+@media screen and (max-width: 1024px) and (min-width: 769px) and (orientation: landscape) {
+  .resultados-horizontal{
+    margin-top:170%;
+  }
+  
+}
+/* Media query para pantallas pequeñas (móviles) */
+@media (max-width: 767px) {
+  .contenedor-horizontal{
+    margin-top: 90%;
+  }
+  .cotenido-horizontal{
+    width: 95%;
+    margin-left: 2%;
+  }
+  .boton-calcular-resultado{
+    height: 35px;
+  }
+  .tabla-resultado-horizontal th{
+    font-size: 12px;
+  }
+  .subtitulo {
+    font-size: 12px;
+  }
+  .boton-atras-resultado{
+    width: 25%;
+    margin-top: 2%;
+    margin-left: -27%;
+  }
 }
