@@ -46,8 +46,8 @@ function UploadFile() {
     if (analysisType === "horizontal" && selectedColumns.length === 2) {
       const [col1, col2] = selectedColumns;
       const updatedData = data.map((row) => {
-        const varAbs = row[col2] - row[col1];
-        const varRel = (varAbs / row[col1]) * 100;
+        const varAbs = (row[col2] - row[col1]).toFixed(2);
+        const varRel = ((varAbs / row[col1]) * 100).toFixed(2);
         return {
           ...row,
           "VARIACION ABSOLUTA": varAbs,
@@ -58,7 +58,7 @@ function UploadFile() {
     } else if (analysisType === "vertical" && verticalColumn) {
       const lastRowValue = data[data.length - 1][verticalColumn];
       const updatedData = data.map((row) => {
-        const analysisVertical = (row[verticalColumn] / lastRowValue) * 100;
+        const analysisVertical = ((row[verticalColumn] / lastRowValue) * 100).toFixed(2);
         return {
           ...row,
           "ANALISIS VERTICAL": analysisVertical,
@@ -82,7 +82,7 @@ function UploadFile() {
               endRowValue !== 0
             ) {
               analysisVerticalSubcuentas =
-                (row[verticalColumn] / endRowValue) * 100;
+                ((row[verticalColumn] / endRowValue) * 100).toFixed(2);
               break;
             }
           }
@@ -99,7 +99,7 @@ function UploadFile() {
         const baseValue = row[verticalColumn];
         Object.keys(row).forEach((key, index) => {
           if (index > 0) {
-            newRow[`AT:${key}`] = (row[key] / baseValue) * 100;
+            newRow[`AT:${key}`] = ((row[key] / baseValue) * 100).toFixed(2);
           }
         });
         return newRow;
