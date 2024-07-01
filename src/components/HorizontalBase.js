@@ -19,6 +19,9 @@ const HorizontalBase = () => {
     years: [2013, 2014, 2015, 2016, 2017],
   });
 
+  const [startYear, setStartYear] = useState(data.years[0]);
+  const [endYear, setEndYear] = useState(data.years[data.years.length - 1]);
+  const [result, setResult] = useState('');
   const [percentages, setPercentages] = useState(null);
 
   const handleChange = (section, subSection, index, yearIndex, value) => {
@@ -42,6 +45,7 @@ const HorizontalBase = () => {
     }
     setData(newData);
   };
+  
 
   const addRow = (section, subSection) => {
     const newData = { ...data };
@@ -174,6 +178,105 @@ const HorizontalBase = () => {
     setPercentages(newPercentages);
   };
 
+  const calculateGrowth = () => {
+    const startYearIndex = data.years.indexOf(Number(startYear));
+    const endYearIndex = data.years.indexOf(Number(endYear));
+    let results = [];
+
+    const calculateSum = (items, yearIndex) => {
+      return items.reduce((total, item) => total + item.valores[yearIndex], 0);
+    };
+
+    const calculateGrowthForItem = (items, itemType) => {
+      let startTotal = 0;
+      let endTotal = 0;
+      items.forEach(item => {
+        const startValue = item.valores[startYearIndex];
+        const endValue = item.valores[endYearIndex];
+        startTotal += startValue;
+        endTotal += endValue;
+        const initial = item.valores[startYearIndex];
+        const final = item.valores[endYearIndex];
+        const percentageOfEndYear = (final / initial) * 100;
+        const growth = ((endValue - startValue) / startValue) * 100;
+        const growthLabel = growth >= 0 ? "Crecimiento" : "Disminución";
+        results.push(`El ${item.nombre} para el ${endYear} representa un ${percentageOfEndYear.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${growth.toFixed(2)}% (${growthLabel}) respecto al año ${startYear}`);
+      });
+      const percentageOfEndYear = (endTotal / startTotal) * 100;
+      const totalGrowth = ((endTotal - startTotal) / startTotal) * 100;
+      const growthLabel = totalGrowth >= 0 ? "Crecimiento" : "Disminución";
+      results.push(`El ${itemType} total para el ${endYear} representa un ${percentageOfEndYear.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${totalGrowth.toFixed(2)}% (${growthLabel}) respecto al año ${startYear}`);
+    };
+
+    // Calculate growth for Activos Corrientes
+    results.push("Activos Corrientes:");
+    calculateGrowthForItem(data.activos.activosCorrientes, "Activos Corrientes");
+
+    // Calculate growth for Activos No Corrientes
+    results.push("Activos No Corrientes:");
+    calculateGrowthForItem(data.activos.activosNoCorrientes, "Activos No Corrientes");
+
+    // Calculate growth for all activos
+    const startTotalActivosCorrientes = calculateSum(data.activos.activosCorrientes, startYearIndex);
+    const endTotalActivosCorrientes = calculateSum(data.activos.activosCorrientes, endYearIndex);
+    const startTotalActivosNoCorrientes = calculateSum(data.activos.activosNoCorrientes, startYearIndex);
+    const endTotalActivosNoCorrientes = calculateSum(data.activos.activosNoCorrientes, endYearIndex);
+
+    const startTotalActivos = startTotalActivosCorrientes + startTotalActivosNoCorrientes;
+    const endTotalActivos = endTotalActivosCorrientes + endTotalActivosNoCorrientes;
+    const percentageOfEndYearActivos = (endTotalActivos / startTotalActivos) * 100;
+    const totalActivosGrowth = ((endTotalActivos - startTotalActivos) / startTotalActivos) * 100;
+    const growthLabelActivos = totalActivosGrowth >= 0 ? "Crecimiento" : "Disminución";
+    results.push(`El TOTAL ACTIVOS para el ${endYear} representa un ${percentageOfEndYearActivos.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${totalActivosGrowth.toFixed(2)}% (${growthLabelActivos}) respecto al año ${startYear}`);
+
+    // Calculate growth for Pasivos
+    results.push("Pasivos:");
+    let startTotalPasivos = 0;
+    let endTotalPasivos = 0;
+    Object.entries(data.pasivosYPatrimonio.pasivos).forEach(([sectionKey, sectionValue]) => {
+      results.push(`  ${sectionKey}:`);
+      let sectionStartTotal = 0;
+      let sectionEndTotal = 0;
+      sectionValue.forEach(item => {
+        const startValue = item.valores[startYearIndex];
+        const endValue = item.valores[endYearIndex];
+        sectionStartTotal += startValue;
+        sectionEndTotal += endValue;
+        const initial = item.valores[startYearIndex];
+        const final = item.valores[endYearIndex];
+        const percentageOfEndYear = (final / initial) * 100;
+        const growth = ((endValue - startValue) / startValue) * 100;
+        const growthLabel = growth >= 0 ? "Crecimiento" : "Disminución";
+        results.push(`    El ${item.nombre} para el ${endYear} representa un ${percentageOfEndYear.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${growth.toFixed(2)}% (${growthLabel}) respecto al año ${startYear}`);
+      });
+      const sectionPercentageOfEndYear = (sectionEndTotal / sectionStartTotal) * 100;
+    const sectionGrowth = ((sectionEndTotal - sectionStartTotal) / sectionStartTotal) * 100;
+    const sectionGrowthLabel = sectionGrowth >= 0 ? "Crecimiento" : "Disminución";
+    results.push(`  El ${sectionKey} total para el ${endYear} representa un ${sectionPercentageOfEndYear.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${sectionGrowth.toFixed(2)}% (${sectionGrowthLabel}) respecto al año ${startYear}`);
+    startTotalPasivos += sectionStartTotal;
+    endTotalPasivos += sectionEndTotal;
+    });
+
+    const percentageOfEndYearPasivos = (endTotalPasivos / startTotalPasivos) * 100;
+    const totalPasivosGrowth = ((endTotalPasivos - startTotalPasivos) / startTotalPasivos) * 100;
+    const growthLabelPasivos = totalPasivosGrowth >= 0 ? "Crecimiento" : "Disminución";
+    results.push(`El TOTAL PASIVOS para el ${endYear} representa un ${percentageOfEndYearPasivos.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${totalPasivosGrowth.toFixed(2)}% (${growthLabelPasivos}) respecto al año ${startYear}`);
+
+    // Calculate growth for Patrimonio
+    results.push("Patrimonio:");
+    calculateGrowthForItem(data.pasivosYPatrimonio.patrimonio, "Patrimonio");
+
+    // Calculate total growth for Pasivos y Patrimonio
+    const startTotalPatrimonio = calculateSum(data.pasivosYPatrimonio.patrimonio, startYearIndex);
+    const endTotalPatrimonio = calculateSum(data.pasivosYPatrimonio.patrimonio, endYearIndex);
+    const totalPasivosYPatrimonioGrowth = ((endTotalPasivos + endTotalPatrimonio - (startTotalPasivos + startTotalPatrimonio)) / (startTotalPasivos + startTotalPatrimonio)) * 100;
+    const percentageOfEndYearPasivosYPatrimonio = ((endTotalPasivos + endTotalPatrimonio) / (startTotalPasivos + startTotalPatrimonio)) * 100;
+    const growthLabelPasivosYPatrimonio = totalPasivosYPatrimonioGrowth >= 0 ? "Crecimiento" : "Disminución";
+    results.push(`El TOTAL PASIVOS Y PATRIMONIO para el ${endYear} representa un ${percentageOfEndYearPasivosYPatrimonio.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${totalPasivosYPatrimonioGrowth.toFixed(2)}% (${growthLabelPasivosYPatrimonio}) respecto al año ${startYear}`);
+
+    setResult(results.join("\n"));
+  };
+
 
   const simulateNextYear = () => {
     const newData = { ...data };
@@ -268,6 +371,7 @@ const HorizontalBase = () => {
 
   return (
     <div className="App">
+          <h3>Analsisis de tendencia </h3>
       <table>
         <thead>
           <tr>
@@ -528,7 +632,36 @@ const HorizontalBase = () => {
             </tbody>
           </table>
           <button onClick={saveToExcel}>Guardar en Excel</button>
-
+          <br />
+          <div>
+            <h2>Cálculo de Crecimiento Total</h2>
+            <label>
+              Año Inicial:
+              <select value={startYear} onChange={(e) => setStartYear(e.target.value)}>
+                <option value="">Seleccione un año</option>
+                {data.years.map((year, yearIndex) => (
+                  <option key={yearIndex} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Año Final:
+              <select value={endYear} onChange={(e) => setEndYear(e.target.value)}>
+                <option value="">Seleccione un año</option>
+                {data.years.map((year, yearIndex) => (
+                  <option key={yearIndex} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button onClick={calculateGrowth}>Calcular Crecimiento</button>
+            <div className="crecimiento">
+              {result && <pre>{result}</pre>}
+            </div>
+          </div>
         </div>
       )}
     </div>

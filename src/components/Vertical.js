@@ -6,11 +6,9 @@ import { Button, message } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 
 const Vertical = () => {
-  const [activosCorrientes, setActivosCorrientes] = useState([
-    { nombre: "", valor: 0 },
-  ]);
-  const [activosFijos, setActivosFijos] = useState([{ nombre: "", valor: 0 }]);
-  const [otrosActivos, setOtrosActivos] = useState([{ nombre: "", valor: 0 }]);
+  const [activosCorrientes, setActivosCorrientes] = useState([{ nombre: "efectivo", valor: 1924},{ nombre: "inversiones temporales", valor: 15415},{ nombre: "cxc clientes", valor: 3005},{ nombre: "otros deudores", valor: 2279},{ nombre: "inventario", valor: 19914},]);
+  const [activosFijos, setActivosFijos] = useState([{ nombre: "terrenos", valor: 2257},{ nombre: "construcciones en curso", valor: 3727},{ nombre: "edificios", valor: 23492},{ nombre: "maquinaria y equipo", valor: 32598},{ nombre: "vehiculo", valor: 3455},{ nombre: "menos depreciacion acomulada", valor: -16042},]);
+  const [otrosActivos, setOtrosActivos] = useState([{ nombre: "inversiones permanentes", valor: 143 },{ nombre: "activos diferidos", valor: 3712},{ nombre: "deudores a largo plazo", valor: 0},{ nombre: "otros activos", valor: 1757},{ nombre: "valorizaciones", valor: 36263},]);
   const [showResults, setShowResults] = useState(false);
   const [totalActivos, setTotalActivos] = useState(0);
 
@@ -19,6 +17,14 @@ const Vertical = () => {
     setFunction((prevState) => {
       const newState = [...prevState];
       newState[index][name] = value;
+      return newState;
+    });
+  };
+
+  const eliminarFila = (setFunction, index) => {
+    setFunction((prevState) => {
+      const newState = [...prevState];
+      newState.splice(index, 1);
       return newState;
     });
   };
@@ -209,6 +215,9 @@ const Vertical = () => {
                       }
                     />
                   </td>
+                  <td><button onClick={() => eliminarFila(setActivosCorrientes, index)}>
+                    Eliminar
+                  </button></td>
                 </tr>
               ))}
               <tr>
@@ -246,6 +255,9 @@ const Vertical = () => {
                       }
                     />
                   </td>
+                  <td><button onClick={() => eliminarFila(setActivosFijos, index)}>
+                    Eliminar
+                  </button></td>
                 </tr>
               ))}
               <tr>
@@ -283,6 +295,9 @@ const Vertical = () => {
                       }
                     />
                   </td>
+                  <td><button onClick={() => eliminarFila(setOtrosActivos, index)}>
+                    Eliminar
+                  </button></td>
                 </tr>
               ))}
               <tr>

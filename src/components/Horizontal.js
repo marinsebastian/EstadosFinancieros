@@ -6,15 +6,9 @@ import { Button } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 
 const Horizontal = () => {
-  const [activosCorrientes, setActivosCorrientes] = useState([
-    { nombre: "", valor1: 0, valor2: 0 },
-  ]);
-  const [activosFijos, setActivosFijos] = useState([
-    { nombre: "", valor1: 0, valor2: 0 },
-  ]);
-  const [otrosActivos, setOtrosActivos] = useState([
-    { nombre: "", valor1: 0, valor2: 0 },
-  ]);
+  const [activosCorrientes, setActivosCorrientes] = useState([{ nombre: "efectivo", valor1: 1924, valor2: 7368},{ nombre: "inversiones temporales", valor1: 15415, valor2: 1825},{ nombre: "cxc clientes", valor1: 3005, valor2:4121},{ nombre: "otros deudores", valor1: 2279,valor2:2891},{ nombre: "inventario", valor1: 19914,valor2:24511},]);
+  const [activosFijos, setActivosFijos] = useState([{ nombre: "terrenos", valor1: 2257,valor2:2849},{ nombre: "construcciones en curso", valor1: 3727,valor2:1510},{ nombre: "edificios", valor1: 23492,valor2:40445},{ nombre: "maquinaria y equipo", valor1: 32598,valor2:53960},{ nombre: "vehiculo", valor1: 3455,valor2:3418},{ nombre: "menos depreciacion acomulada", valor1: -16042, valor2:-24931},]);
+  const [otrosActivos, setOtrosActivos] = useState([{ nombre: "inversiones permanentes", valor1: 143,valor2:127 },{ nombre: "activos diferidos", valor1: 3712,valor2:7883},{ nombre: "deudores a largo plazo", valor1: 0,valor2:0},{ nombre: "otros activos", valor1: 1757,valor2:1876},{ nombre: "valorizaciones", valor1: 36263,valor2:49127},]);
   const [showResults, setShowResults] = useState(false);
   const [totalActivos, setTotalActivos] = useState(0);
   const [totalActivos2, setTotalActivos2] = useState(0);
@@ -24,6 +18,14 @@ const Horizontal = () => {
     setFunction((prevState) => {
       const newState = [...prevState];
       newState[index][name] = value;
+      return newState;
+    });
+  };
+
+  const eliminarFila = (setFunction, index) => {
+    setFunction((prevState) => {
+      const newState = [...prevState];
+      newState.splice(index, 1);
       return newState;
     });
   };
@@ -271,6 +273,9 @@ const Horizontal = () => {
                       style={{ width: "100%" }}
                     />
                   </td>
+                  <td><button onClick={() => eliminarFila(setActivosCorrientes, index)}>
+                    Eliminar
+                  </button></td>
                 </tr>
               ))}
               <tr>
@@ -323,6 +328,9 @@ const Horizontal = () => {
                       style={{ width: "100%" }}
                     />
                   </td>
+                  <td><button onClick={() => eliminarFila(setActivosFijos, index)}>
+                    Eliminar
+                  </button></td>
                 </tr>
               ))}
               <tr>
@@ -375,6 +383,9 @@ const Horizontal = () => {
                       style={{ width: "100%" }}
                     />
                   </td>
+                  <td><button onClick={() => eliminarFila(setOtrosActivos, index)}>
+                    Eliminar
+                  </button></td>
                 </tr>
               ))}
               <tr>
@@ -458,6 +469,7 @@ const Horizontal = () => {
                   ).toFixed(2)}
                   %
                 </td>
+                <td></td>
               </tr>
               <tr>
                 <td className="subtitulo" colSpan="5">

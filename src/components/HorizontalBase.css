@@ -56,6 +56,50 @@ button:hover {
   }
 }
 
+.crecimiento {
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.crecimiento pre {
+  white-space: pre-wrap;
+  background: #fff;
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  max-width: 100%;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+@media (max-width: 768px) {
+  .crecimiento {
+    padding: 15px;
+  }
+
+  .crecimiento pre {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .crecimiento {
+    padding: 10px;
+  }
+
+  .crecimiento pre {
+    font-size: 12px;
+  }
+}
+
+
 @media (max-width: 480px) {
   th, td {
     font-size: 8px;
