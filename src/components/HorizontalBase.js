@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './HorizontalBase.css';
-import * as XLSX from 'xlsx';
-
+import { writeFile, utils } from 'xlsx';
 
 const HorizontalBase = () => {
   const [data, setData] = useState({
@@ -200,23 +199,23 @@ const HorizontalBase = () => {
         const percentageOfEndYear = (final / initial) * 100;
         const growth = ((endValue - startValue) / startValue) * 100;
         const growthLabel = growth >= 0 ? "Crecimiento" : "Disminución";
-        results.push(`El ${item.nombre} para el ${endYear} representa un ${percentageOfEndYear.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${growth.toFixed(2)}% (${growthLabel}) respecto al año ${startYear}`);
+        results.push(`${item.nombre} para el ${endYear} representa un ${percentageOfEndYear.toFixed(2)}% del ${startYear}, lo cual significa que el crecimiento para el año ${endYear} fue del ${growth.toFixed(2)}% (${growthLabel}) respecto al año ${startYear}`);
       });
       const percentageOfEndYear = (endTotal / startTotal) * 100;
       const totalGrowth = ((endTotal - startTotal) / startTotal) * 100;
       const growthLabel = totalGrowth >= 0 ? "Crecimiento" : "Disminución";
-      results.push(`El ${itemType} total para el ${endYear} representa un ${percentageOfEndYear.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${totalGrowth.toFixed(2)}% (${growthLabel}) respecto al año ${startYear}`);
+      results.push(`${itemType} total para el ${endYear} representa un ${percentageOfEndYear.toFixed(2)}% del ${startYear}, lo cual significa que el crecimiento para el año ${endYear} fue del ${totalGrowth.toFixed(2)}% (${growthLabel}) respecto al año ${startYear}`);
     };
 
-    // Calculate growth for Activos Corrientes
+    // Calcular crecimiento para Activos Corrientes
     results.push("Activos Corrientes:");
     calculateGrowthForItem(data.activos.activosCorrientes, "Activos Corrientes");
 
-    // Calculate growth for Activos No Corrientes
+    // Calcular crecimiento para Activos No Corrientes
     results.push("Activos No Corrientes:");
     calculateGrowthForItem(data.activos.activosNoCorrientes, "Activos No Corrientes");
 
-    // Calculate growth for all activos
+    // Calcular crecimiento total de activos
     const startTotalActivosCorrientes = calculateSum(data.activos.activosCorrientes, startYearIndex);
     const endTotalActivosCorrientes = calculateSum(data.activos.activosCorrientes, endYearIndex);
     const startTotalActivosNoCorrientes = calculateSum(data.activos.activosNoCorrientes, startYearIndex);
@@ -227,9 +226,10 @@ const HorizontalBase = () => {
     const percentageOfEndYearActivos = (endTotalActivos / startTotalActivos) * 100;
     const totalActivosGrowth = ((endTotalActivos - startTotalActivos) / startTotalActivos) * 100;
     const growthLabelActivos = totalActivosGrowth >= 0 ? "Crecimiento" : "Disminución";
-    results.push(`El TOTAL ACTIVOS para el ${endYear} representa un ${percentageOfEndYearActivos.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${totalActivosGrowth.toFixed(2)}% (${growthLabelActivos}) respecto al año ${startYear}`);
+    results.push("ACTIVOS TOTAL:");
+    results.push(`El TOTAL ACTIVOS para el ${endYear} representa un ${percentageOfEndYearActivos.toFixed(2)}% del ${startYear}, lo cual significa que el crecimiento para el año ${endYear} fue del ${totalActivosGrowth.toFixed(2)}% (${growthLabelActivos}) respecto al año ${startYear}`);
 
-    // Calculate growth for Pasivos
+    // Calcular crecimiento para Pasivos
     results.push("Pasivos:");
     let startTotalPasivos = 0;
     let endTotalPasivos = 0;
@@ -247,36 +247,94 @@ const HorizontalBase = () => {
         const percentageOfEndYear = (final / initial) * 100;
         const growth = ((endValue - startValue) / startValue) * 100;
         const growthLabel = growth >= 0 ? "Crecimiento" : "Disminución";
-        results.push(`    El ${item.nombre} para el ${endYear} representa un ${percentageOfEndYear.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${growth.toFixed(2)}% (${growthLabel}) respecto al año ${startYear}`);
+        results.push(`${item.nombre} para el ${endYear} representa un ${percentageOfEndYear.toFixed(2)}% del ${startYear}, lo cual significa que el crecimiento para el año ${endYear} fue del ${growth.toFixed(2)}% (${growthLabel}) respecto al año ${startYear}`);
       });
       const sectionPercentageOfEndYear = (sectionEndTotal / sectionStartTotal) * 100;
-    const sectionGrowth = ((sectionEndTotal - sectionStartTotal) / sectionStartTotal) * 100;
-    const sectionGrowthLabel = sectionGrowth >= 0 ? "Crecimiento" : "Disminución";
-    results.push(`  El ${sectionKey} total para el ${endYear} representa un ${sectionPercentageOfEndYear.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${sectionGrowth.toFixed(2)}% (${sectionGrowthLabel}) respecto al año ${startYear}`);
-    startTotalPasivos += sectionStartTotal;
-    endTotalPasivos += sectionEndTotal;
+      const sectionGrowth = ((sectionEndTotal - sectionStartTotal) / sectionStartTotal) * 100;
+      const sectionGrowthLabel = sectionGrowth >= 0 ? "Crecimiento" : "Disminución";
+      results.push(`${sectionKey} total para el ${endYear} representa un ${sectionPercentageOfEndYear.toFixed(2)}% del ${startYear}, lo cual significa que el crecimiento para el año ${endYear} fue del ${sectionGrowth.toFixed(2)}% (${sectionGrowthLabel}) respecto al año ${startYear}`);
+      startTotalPasivos += sectionStartTotal;
+      endTotalPasivos += sectionEndTotal;
     });
 
     const percentageOfEndYearPasivos = (endTotalPasivos / startTotalPasivos) * 100;
     const totalPasivosGrowth = ((endTotalPasivos - startTotalPasivos) / startTotalPasivos) * 100;
     const growthLabelPasivos = totalPasivosGrowth >= 0 ? "Crecimiento" : "Disminución";
-    results.push(`El TOTAL PASIVOS para el ${endYear} representa un ${percentageOfEndYearPasivos.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${totalPasivosGrowth.toFixed(2)}% (${growthLabelPasivos}) respecto al año ${startYear}`);
+    results.push(`El TOTAL PASIVOS para el ${endYear} representa un ${percentageOfEndYearPasivos.toFixed(2)}% del ${startYear}, lo cual significa que el crecimiento para el año ${endYear} fue del ${totalPasivosGrowth.toFixed(2)}% (${growthLabelPasivos}) respecto al año ${startYear}`);
 
-    // Calculate growth for Patrimonio
+    // Calcular crecimiento para Patrimonio
     results.push("Patrimonio:");
     calculateGrowthForItem(data.pasivosYPatrimonio.patrimonio, "Patrimonio");
 
-    // Calculate total growth for Pasivos y Patrimonio
+    // Calcular crecimiento total para Pasivos y Patrimonio
     const startTotalPatrimonio = calculateSum(data.pasivosYPatrimonio.patrimonio, startYearIndex);
     const endTotalPatrimonio = calculateSum(data.pasivosYPatrimonio.patrimonio, endYearIndex);
     const totalPasivosYPatrimonioGrowth = ((endTotalPasivos + endTotalPatrimonio - (startTotalPasivos + startTotalPatrimonio)) / (startTotalPasivos + startTotalPatrimonio)) * 100;
     const percentageOfEndYearPasivosYPatrimonio = ((endTotalPasivos + endTotalPatrimonio) / (startTotalPasivos + startTotalPatrimonio)) * 100;
     const growthLabelPasivosYPatrimonio = totalPasivosYPatrimonioGrowth >= 0 ? "Crecimiento" : "Disminución";
-    results.push(`El TOTAL PASIVOS Y PATRIMONIO para el ${endYear} representa un ${percentageOfEndYearPasivosYPatrimonio.toFixed(2)}% del ${startYear} lo cual significa que el crecimiento para el año ${endYear} fue del ${totalPasivosYPatrimonioGrowth.toFixed(2)}% (${growthLabelPasivosYPatrimonio}) respecto al año ${startYear}`);
+    results.push(`El TOTAL PASIVOS Y PATRIMONIO para el ${endYear} representa un ${percentageOfEndYearPasivosYPatrimonio.toFixed(2)}% del ${startYear}, lo cual significa que el crecimiento para el año ${endYear} fue del ${totalPasivosYPatrimonioGrowth.toFixed(2)}% (${growthLabelPasivosYPatrimonio}) respecto al año ${startYear}`);
 
     setResult(results.join("\n"));
   };
 
+  const handleExportCombined = () => {
+    const headers = ['Cuentas', ...percentages.years];
+    const data = [];
+
+    // Total Activos
+    data.push(['Total Activos', ...percentages.activos.totalActivos]);
+
+    // Activos Corrientes
+    data.push(['Activos Corrientes', ...percentages.activos.totalActivosCorrientes]);
+    percentages.activos.activosCorrientes.forEach(item => {
+      data.push([item.nombre, ...item.valores]);
+    });
+
+    // Activos No Corrientes
+    data.push(['Activos No Corrientes', ...percentages.activos.totalActivosNoCorrientes]);
+    percentages.activos.activosNoCorrientes.forEach(item => {
+      data.push([item.nombre, ...item.valores]);
+    });
+    data.push(['Pasivos y Patrimonio', ...percentages.pasivosYPatrimonio.totalPasivosYPatrimonio]);
+
+    // Pasivos
+    data.push(['Pasivos', ...percentages.pasivosYPatrimonio.totalPasivos]);
+    data.push(['Pasivos Corto Plazo', ...percentages.pasivosYPatrimonio.totalPasivosCortoPlazo]);
+    percentages.pasivosYPatrimonio.pasivos.pasivosCortoPlazo.forEach(item => {
+      data.push([item.nombre, ...item.valores]);
+    });
+ 
+    data.push(['Pasivos Largo Plazo', ...percentages.pasivosYPatrimonio.totalPasivosLargoPlazo]);
+    percentages.pasivosYPatrimonio.pasivos.pasivosLargoPlazo.forEach(item => {
+      data.push([item.nombre, ...item.valores]);
+    });
+ 
+    // Patrimonio
+    data.push(['Patrimonio', ...percentages.pasivosYPatrimonio.totalPatrimonio]);
+    percentages.pasivosYPatrimonio.patrimonio.forEach(item => {
+      data.push([item.nombre, ...item.valores]);
+    });
+ 
+    // Crear la hoja de cálculo
+    const worksheet = utils.aoa_to_sheet([headers, ...data]);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, 'Tabla de Porcentajes');
+ 
+    // Añadir resultados de crecimiento a otra hoja
+    const growthWorksheet = utils.json_to_sheet(result.split('\n').map((line, index) => ({ Resultado: line })));
+    utils.book_append_sheet(workbook, growthWorksheet, 'Resultados de Crecimiento');
+ 
+    // Exportar el archivo Excel
+    writeFile(workbook, 'financial_data_combined.xlsx');
+  };
+ 
+
+  const handleExportc = () => {
+    const worksheet = utils.json_to_sheet(result.split('\n').map((line, index) => ({ Result: line })));
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    writeFile(workbook, 'growth_results.xlsx');
+  };
 
   const simulateNextYear = () => {
     const newData = { ...data };
@@ -327,44 +385,53 @@ const HorizontalBase = () => {
 
     setData(newData);
   };
-  const saveToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet([]);
-    const range = XLSX.utils.decode_range(worksheet['!ref']);
+  const handleExport = () => {
+    const headers = ['Cuentas', ...percentages.years];
+    const data = [];
 
-    // Headers
-    const headers = ["Section", "Sub Section", "Name", ...data.years];
-    XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
+    // Total Activos
+    data.push(['Total Activos', ...percentages.activos.totalActivos]);
 
-    // Data
-    const addRowsToSheet = (section, subSection, items) => {
-      items.forEach((item, index) => {
-        const row = [section, subSection, item.nombre, ...item.valores];
-        XLSX.utils.sheet_add_aoa(worksheet, [row], { origin: `A${range.e.r + 2 + index}` });
-      });
-    };
+    // Activos Corrientes
+    data.push(['Activos Corrientes', ...percentages.activos.totalActivosCorrientes]);
+    percentages.activos.activosCorrientes.forEach(item => {
+      data.push([item.nombre, ...item.valores]);
+    });
 
-    // Add Activos
-    addRowsToSheet("Activos", "Activos Corrientes", data.activos.activosCorrientes);
-    addRowsToSheet("Activos", "Activos No Corrientes", data.activos.activosNoCorrientes);
+    // Activos No Corrientes
+    data.push(['Activos No Corrientes', ...percentages.activos.totalActivosNoCorrientes]);
+    percentages.activos.activosNoCorrientes.forEach(item => {
+      data.push([item.nombre, ...item.valores]);
+    });
 
-    // Add Pasivos
-    addRowsToSheet("Pasivos", "Pasivos Corto Plazo", data.pasivosYPatrimonio.pasivos.pasivosCortoPlazo);
-    addRowsToSheet("Pasivos", "Pasivos Largo Plazo", data.pasivosYPatrimonio.pasivos.pasivosLargoPlazo);
+    // Pasivos y Patrimonio
+    data.push(['Pasivos y Patrimonio', ...percentages.pasivosYPatrimonio.totalPasivosYPatrimonio]);
 
-    // Add Patrimonio
-    addRowsToSheet("Patrimonio", "", data.pasivosYPatrimonio.patrimonio);
+    // Pasivos
+    data.push(['Pasivos', ...percentages.pasivosYPatrimonio.totalPasivos]);
+    data.push(['Pasivos Corto Plazo', ...percentages.pasivosYPatrimonio.totalPasivosCortoPlazo]);
+    percentages.pasivosYPatrimonio.pasivos.pasivosCortoPlazo.forEach(item => {
+      data.push([item.nombre, ...item.valores]);
+    });
 
-    // Add Totals
-    XLSX.utils.sheet_add_aoa(worksheet, [["Activos", "", "Total Activos", ...data.years.map((_, yearIndex) => percentages.activos.totalActivos[yearIndex])]], { origin: `A${worksheet['!ref'].split(":")[1].slice(1)}+2` });
-    XLSX.utils.sheet_add_aoa(worksheet, [["Activos", "", "Total Activos Corrientes", ...data.years.map((_, yearIndex) => percentages.activos.totalActivosCorrientes[yearIndex])]], { origin: `A${worksheet['!ref'].split(":")[1].slice(1)}+3` });
-    XLSX.utils.sheet_add_aoa(worksheet, [["Activos", "", "Total Activos No Corrientes", ...data.years.map((_, yearIndex) => percentages.activos.totalActivosNoCorrientes[yearIndex])]], { origin: `A${worksheet['!ref'].split(":")[1].slice(1)}+4` });
+    data.push(['Pasivos Largo Plazo', ...percentages.pasivosYPatrimonio.totalPasivosLargoPlazo]);
+    percentages.pasivosYPatrimonio.pasivos.pasivosLargoPlazo.forEach(item => {
+      data.push([item.nombre, ...item.valores]);
+    });
 
-    XLSX.utils.sheet_add_aoa(worksheet, [["Pasivos y Patrimonio", "", "Total Pasivos", ...data.years.map((_, yearIndex) => percentages.pasivosYPatrimonio.totalPasivos[yearIndex])]], { origin: `A${worksheet['!ref'].split(":")[1].slice(1)}+5` });
-    XLSX.utils.sheet_add_aoa(worksheet, [["Pasivos y Patrimonio", "", "Total Patrimonio", ...data.years.map((_, yearIndex) => percentages.pasivosYPatrimonio.totalPatrimonio[yearIndex])]], { origin: `A${worksheet['!ref'].split(":")[1].slice(1)}+6` });
+    // Patrimonio
+    data.push(['Patrimonio', ...percentages.pasivosYPatrimonio.totalPatrimonio]);
+    percentages.pasivosYPatrimonio.patrimonio.forEach(item => {
+      data.push([item.nombre, ...item.valores]);
+    });
 
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    XLSX.writeFile(workbook, "financial_data.xlsx");
+    // Crear la hoja de cálculo
+    const worksheet = utils.aoa_to_sheet([headers, ...data]);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+    // Exportar el archivo Excel
+    writeFile(workbook, 'financial_data.xlsx');
   };
 
 
@@ -372,7 +439,7 @@ const HorizontalBase = () => {
   return (
     <div className="App">
           <h3>Analsisis de tendencia </h3>
-      <table>
+      <table className="tabla-horizontal">
         <thead>
           <tr>
             <th>Cuentas</th>
@@ -527,7 +594,7 @@ const HorizontalBase = () => {
       {percentages && (
         <div>
           <h2>analisis tendencia con base año 2013</h2>
-          <table>
+          <table className="tabla-resultado-horizontal">
             <thead>
               <tr>
                 <th>Cuentas</th>
@@ -631,7 +698,7 @@ const HorizontalBase = () => {
               ))}
             </tbody>
           </table>
-          <button onClick={saveToExcel}>Guardar en Excel</button>
+          <button onClick={handleExport}>Guardar en Excel</button>
           <br />
           <div>
             <h2>Cálculo de Crecimiento Total</h2>
@@ -658,9 +725,10 @@ const HorizontalBase = () => {
               </select>
             </label>
             <button onClick={calculateGrowth}>Calcular Crecimiento</button>
-            <div className="crecimiento">
+            <div className="crecimiento ">
               {result && <pre>{result}</pre>}
             </div>
+            {result && <button onClick={handleExportCombined}>Exportar a Excel</button>}
           </div>
         </div>
       )}

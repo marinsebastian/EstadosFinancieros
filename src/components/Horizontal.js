@@ -580,7 +580,7 @@ const Horizontal = () => {
                     cuenta.valor1,
                     cuenta.valor2
                   ).toFixed(2)}
-                  $ en el anio 3 respecto al anio 2 lo que significa en terminos
+                  $ en el año 3 respecto al anio 2 lo que significa en terminos
                   de variacion relativa un incremento de{" "}
                   {calcularAnalisisSubcuentas(
                     cuenta.valor1,
@@ -599,7 +599,7 @@ const Horizontal = () => {
                     cuenta.valor1,
                     cuenta.valor2
                   ).toFixed(2)}
-                  $ en el anio 3 respecto al anio 2 lo que significa en terminos
+                  $ en el año 3 respecto al año 2 lo que significa en terminos
                   de variacion relativa un incremento de{" "}
                   {calcularAnalisisSubcuentas(
                     cuenta.valor1,
@@ -618,7 +618,7 @@ const Horizontal = () => {
                     cuenta.valor1,
                     cuenta.valor2
                   ).toFixed(2)}
-                  $ en el anio 3 respecto al anio 2 lo que significa en terminos
+                  $ en el año 3 respecto al año 2 lo que significa en terminos
                   de variacion relativa un incremento de{" "}
                   {calcularAnalisisSubcuentas(
                     cuenta.valor1,
