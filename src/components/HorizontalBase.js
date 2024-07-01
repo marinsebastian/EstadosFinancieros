@@ -590,7 +590,7 @@ const HorizontalBase = () => {
 
         </tbody>
       </table>
-      <button onClick={calculatePercentages}>Calcular tendencia</button>
+      <button onClick={calculatePercentages}>Calcular tendencia con año base</button>
       {percentages && (
         <div>
           <h2>analisis tendencia con base año 2013</h2>
